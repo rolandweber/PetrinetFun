@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta name="viewport" content="width=device-width">
+<title>Canvas Experiments</title>
+<style type="text/css">
+body {
+  background-color: #f8f8f8;
+}
+
+div.stage {
+  width: 800px;
+  height: 600px;
+  display: inline-block;
+  position: relative;
+  border: 1px solid #f0f0f0;
+  background-color: #ffffff;
+}
+
+div.stage > canvas {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+#grid   { z-index: 1; }
+#canvas { z-index: 2; }
+
+div.center {
+  text-align: center;
+}
+</style>
+
+<script>
+var ctx = null;
+var ptPath = null;
+
+function init() {
+  drawGrid();
+
+  var canvas = document.getElementById('canvas')
+  ctx = canvas.getContext('2d')
+  ctx.translate(25, 25)
+  ctx.lineWidth = 2;
+
+  ptPath = new Path2D();
+}
+
+function putPlace(xpos, ypos) {
+  var x = xpos * 25, y = ypos * 25;
+  var radius = 20;
+  ptPath.moveTo(x+radius, y)
+  ptPath.arc(x, y, radius, 0, Math.PI*2)
+}
+
+function putTransition(xpos, ypos, tilt=0) {
+  // only horizontal and vertical can be drawn with ctx.rect()
+  //@@@ others have to be drawn as four lines
+  tilt = tilt % 180
+  if (tilt < 0)
+    tilt += 180
+
+  var width, height;
+  if (tilt == 0) {
+    width = 40;
+    height = 20;
+  } else if (tilt == 90) {
+    width = 20;
+    height = 40;
+  } else {
+    //@@@ other tilts not implemented, draw as square
+    width = 30;
+    height = 30;
+  }
+
+  var top  = (ypos * 25) - (height/2);
+  var left = (xpos * 25) - (width/2);
+  ptPath.rect(left, top, width, height);
+}
+
+function putArc(fromx, fromy, tox, toy) {
+  var xf = fromx * 25, yf = fromy * 25, xt = tox * 25, yt = toy * 25;
+  ctx.moveTo(xf, yf)
+  ctx.lineTo(xt, yt)
+
+  // to determine arc position, need:
+  // - direction of the line: North, East, South, West
+  // - kind of target: place or transition
+  //   - orientation, if transition
+}
+
+
+function draw() {
+
+  // draw connecting arcs first
+
+  ctx.strokeStyle = 'rgb(0, 0, 0)';
+  ctx.lineCap = 'square';
+  ctx.beginPath()
+
+  putArc(0,0, 4,0);
+  putArc(4,0, 8,0);
+  putArc(8,0, 8,4);
+  putArc(8,4, 8,8);
+  putArc(8,8, 4,8);
+  putArc(4,8, 0,8);
+  putArc(0,8, 0,4);
+  putArc(0,4, 0,0);
+
+  ctx.stroke()
+
+  // places and transitions go into ptPath, not ctx
+
+  putPlace(0, 0);
+  putPlace(8, 0);
+  putPlace(8, 8);
+  putPlace(0, 8);
+
+  putTransition(4, 0);
+  putTransition(8, 4, 90);
+  putTransition(4, 8);
+  putTransition(0, 4, 90);
+
+  // blot out arcs where places and transitions will be
+  ctx.globalCompositeOperation = 'destination-out'
+  ctx.fillStyle = 'white';
+  ctx.fill(ptPath);
+
+  // optionally, fill the places and transitions
+  // transparency will affect highlighting later
+  ctx.globalCompositeOperation = 'source-over'
+  //ctx.fillStyle = 'rgba(252, 252, 252, 1.0)';
+  ctx.fillStyle = 'rgba(252, 252, 252, 0.5)';
+  ctx.fill(ptPath);
+
+  // draw the places and transitions
+  ctx.globalCompositeOperation = 'source-over'
+  ctx.strokeStyle = 'darkblue'; // black
+  ctx.stroke(ptPath);
+}
+
+function drawGrid() { // on dedicated canvas
+  var canvas = document.getElementById('grid')
+  var ctx = canvas.getContext('2d')
+  ctx.strokeStyle = 'rgb(224, 242, 224)'
+  ctx.beginPath()
+  var i, width=800, height=600, step=25;
+  for (i = step ; i < width ; i += step) {
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i, height);
+  }
+  for (i = step ; i < height ; i += step) {
+    ctx.moveTo(0, i);
+    ctx.lineTo(width, i);
+  }
+  ctx.stroke()
+}
+
+</script>
+</head><!-- ============================================================== -->
+
+<body onload="init(); draw()">
+<h1>Canvas Experiments</h1>
+
+<div class="center">
+<div class="stage">
+<canvas id="grid" width="800" height="600">
+</canvas>
+<canvas id="canvas" width="800" height="600">
+<i>Here should be a canvas for drawing.</i>
+</canvas>
+</div>
+</div>
+
+</body>
+</html>
+
