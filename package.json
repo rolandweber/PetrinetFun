@@ -1,0 +1,28 @@
+{
+  "name": "petrinet-fun",
+  "version": "0.0.0-dev",
+  "description": "Visualization of Petri net invariants",
+  "main": "",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^3.5.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rolandweber/PetrinetFun.git"
+  },
+  "keywords": [
+    "Petri net",
+    "invariant",
+    "visualization"
+  ],
+  "author": "Roland Weber",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/rolandweber/PetrinetFun/issues"
+  },
+  "homepage": "https://github.com/rolandweber/PetrinetFun#readme"
+}

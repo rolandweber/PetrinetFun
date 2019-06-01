@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outDir": "./target/js/",
+    "sourceMap": false,
+    "strictNullChecks": true,
+    "target": "es6"
+  },
+  "include": [
+    "./src/main/ts/"
+  ]
+}
