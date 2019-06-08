@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta name="viewport" content="width=device-width">
+<title>SVG Experiments</title>
+<style type="text/css">
+body {
+  background-color: #f8f8f8;
+}
+
+div.stage {
+  width: 800px;
+  height: 600px;
+  display: inline-block;
+  position: relative;
+  border: 1px solid #f0f0f0;
+  background-color: #ffffff;
+}
+
+div.center {
+  text-align: center;
+}
+</style>
+
+<script>
+/*
+  putArc(0,0, 4,0);
+  putArc(4,0, 8,0);
+  putArc(8,0, 8,4);
+  putArc(8,4, 8,8);
+  putArc(8,8, 4,8);
+  putArc(4,8, 0,8);
+  putArc(0,8, 0,4);
+  putArc(0,4, 0,0);
+
+  putPlace(0, 0);
+  putPlace(8, 0);
+  putPlace(8, 8);
+  putPlace(0, 8);
+
+  putTransition(4, 0);
+  putTransition(8, 4, 90);
+  putTransition(4, 8);
+  putTransition(0, 4, 90);
+*/
+</script>
+</head><!-- ============================================================== -->
+
+<body onload="init(); draw()">
+<h1>SVG Experiments</h1>
+
+<div class="center">
+<div class="stage">
+<svg id="petrinet" width="800" height="600">
+<g>
+  <line x1="25" x2="25" y1="0" y2="599"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="50" x2="50" y1="0" y2="599"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="75" x2="75" y1="0" y2="599"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="100" x2="100" y1="0" y2="599"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="125" x2="125" y1="0" y2="599"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="150" x2="150" y1="0" y2="599"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="175" x2="175" y1="0" y2="599"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="200" x2="200" y1="0" y2="599"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="225" x2="225" y1="0" y2="599"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="250" x2="250" y1="0" y2="599"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+
+  <line x1="0" x2="799" y1="25" y2="25"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="0" x2="799" y1="50" y2="50"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="0" x2="799" y1="75" y2="75"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="0" x2="799" y1="100" y2="100"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="0" x2="799" y1="125" y2="125"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="0" x2="799" y1="150" y2="150"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="0" x2="799" y1="175" y2="175"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="0" x2="799" y1="200" y2="200"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="0" x2="799" y1="225" y2="225"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+  <line x1="0" x2="799" y1="250" y2="250"
+        stroke="rgb(224, 242, 224)" stroke-width="1" />
+</g>
+<g>
+  <line x1="25" y1="25" x2="125" y2="25"
+        stroke="black" stroke-width="2" />
+  <line x1="125" y1="25" x2="225" y2="25"
+        stroke="black" stroke-width="2" />
+  <line x1="225" y1="25" x2="225" y2="125"
+        stroke="black" stroke-width="2" />
+  <line x1="225" y1="125" x2="225" y2="225"
+        stroke="black" stroke-width="2" />
+  <line x1="225" y1="225" x2="125" y2="225"
+        stroke="black" stroke-width="2" />
+  <line x1="125" y1="225" x2="25" y2="225"
+        stroke="black" stroke-width="2" />
+
+  <line x1="25" y1="225" x2="25" y2="125"
+        stroke="black" stroke-width="2" />
+  <line x1="25" y1="125" x2="25" y2="25"
+        stroke="black" stroke-width="2" />
+
+  <circle cx="25" cy="25" r="20"
+          stroke="darkblue" fill="white" stroke-width="2" />
+  <circle cx="225" cy="25" r="20"
+          stroke="darkblue" fill="white" stroke-width="2" />
+  <circle cx="225" cy="225" r="20"
+          stroke="darkblue" fill="white" stroke-width="2" />
+  <circle cx="25" cy="225" r="20"
+          stroke="darkblue" fill="white" stroke-width="2" />
+
+  <!-- pos 4,0 => x=100+25 y=0+25 -->
+  <rect x="105" y="15" width="40" height="20"
+        stroke="darkblue" fill="white" stroke-width="2" />
+  <rect x="215" y="105" width="20" height="40"
+        stroke="darkblue" fill="white" stroke-width="2" />
+  <rect x="105" y="215" width="40" height="20"
+        stroke="darkblue" fill="white" stroke-width="2" />
+  <rect x="15" y="105" width="20" height="40"
+        stroke="darkblue" fill="white" stroke-width="2" />
+</g>
+</svg>
+</div>
+</div>
+
+</body>
+</html>
+
