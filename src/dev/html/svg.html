@@ -21,10 +21,134 @@ div.stage {
 div.center {
   text-align: center;
 }
+
+div.stage svg g.grid {
+  stroke: rgb(224, 242, 224);
+  stroke-width: 1;
+}
+
+div.stage .structure .place,
+div.stage .structure .transition {
+  stroke: darkblue;
+  stroke-width: 2;
+/* transparency lets arcs shine through...
+  fill:   rgba(255, 255, 255, 0.8);
+ */
+  fill:   white;
+}
+
+div.stage .structure .arc {
+  stroke: black;
+  stroke-width: 2;
+}
 </style>
 
 <script>
-/*
+svgns = "http://www.w3.org/2000/svg"
+
+function createGrid() {
+
+  var gridparent = document.getElementById("grid");
+  if (!gridparent) {
+    return;
+  }
+  while (gridparent.lastChild) {
+    gridparent.removeChild(gridparent.lastChild);
+  }
+
+  var i, width=800, height=600, step=25;
+
+  var line = document.createElementNS(svgns, "line");
+  line.setAttributeNS(null, "y1", "0");
+  line.setAttributeNS(null, "y2", height-1);
+
+  for (i = step ; i < width ; i += step) {
+    var gl = line.cloneNode()
+    gl.setAttributeNS(null, "x1", i);
+    gl.setAttributeNS(null, "x2", i);
+    gridparent.appendChild(gl);
+  }
+
+  line.setAttributeNS(null, "x1", "0");
+  line.setAttributeNS(null, "x2", width-1);
+
+  for (i = step ; i < height ; i += step) {
+    var gl = line.cloneNode()
+    gl.setAttributeNS(null, "y1", i);
+    gl.setAttributeNS(null, "y2", i);
+    gridparent.appendChild(gl);
+  }
+
+} // createGrid
+
+
+function putPlace(xpos, ypos) {
+  var x = (xpos+1) * 25, y = (ypos+1) * 25;
+  var radius = 20;
+
+  var place = document.createElementNS(svgns, "circle");
+  place.setAttributeNS(null, "class", "place");
+  place.setAttributeNS(null, "cx", x);
+  place.setAttributeNS(null, "cy", y);
+  place.setAttributeNS(null, "r", radius);
+
+  var nodes = document.getElementById("nodes");
+  nodes.appendChild(place);
+}
+
+
+function putTransition(xpos, ypos, tilt=0) {
+  // only horizontal and vertical allowed here
+  tilt = tilt % 180
+  if (tilt < 0)
+    tilt += 180
+
+  var width, height;
+  if (tilt == 0) {
+    width = 40;
+    height = 20;
+  } else if (tilt == 90) {
+    width = 20;
+    height = 40;
+  } else {
+    //@@@ other tilts not implemented, draw as square
+    width = 30;
+    height = 30;
+  }
+
+  var top  = ((ypos+1) * 25) - (height/2);
+  var left = ((xpos+1) * 25) - (width/2);
+
+  var transition = document.createElementNS(svgns, "rect");
+  transition.setAttributeNS(null, "class", "transition");
+  transition.setAttributeNS(null, "x", left);
+  transition.setAttributeNS(null, "y", top);
+  transition.setAttributeNS(null, "width", width);
+  transition.setAttributeNS(null, "height", height);
+
+  var nodes = document.getElementById("nodes");
+  nodes.appendChild(transition);
+}
+
+
+function putArc(fromx, fromy, tox, toy) {
+  var xf = (fromx+1) * 25, yf = (fromy+1) * 25,
+      xt = (tox+1) * 25,   yt = (toy+1) * 25;
+
+  var arc = document.createElementNS(svgns, "line");
+  arc.setAttributeNS(null, "class", "arc");
+  arc.setAttributeNS(null, "x1", xf);
+  arc.setAttributeNS(null, "y1", yf);
+  arc.setAttributeNS(null, "x2", xt);
+  arc.setAttributeNS(null, "y2", yt);
+
+  var arcs = document.getElementById("arcs");
+  arcs.appendChild(arc);
+}
+
+
+function drawStructure() {
+
   putArc(0,0, 4,0);
   putArc(4,0, 8,0);
   putArc(8,0, 8,4);
@@ -43,96 +167,24 @@ div.center {
   putTransition(8, 4, 90);
   putTransition(4, 8);
   putTransition(0, 4, 90);
-*/
+}
 </script>
 </head><!-- ============================================================== -->
 
-<body onload="init(); draw()">
+<body onload="drawStructure(); createGrid()">
 <h1>SVG Experiments</h1>
 
 <div class="center">
 <div class="stage">
-<svg id="petrinet" width="800" height="600">
-<g>
-  <line x1="25" x2="25" y1="0" y2="599"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="50" x2="50" y1="0" y2="599"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="75" x2="75" y1="0" y2="599"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="100" x2="100" y1="0" y2="599"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="125" x2="125" y1="0" y2="599"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="150" x2="150" y1="0" y2="599"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="175" x2="175" y1="0" y2="599"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="200" x2="200" y1="0" y2="599"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="225" x2="225" y1="0" y2="599"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="250" x2="250" y1="0" y2="599"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-
-  <line x1="0" x2="799" y1="25" y2="25"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="0" x2="799" y1="50" y2="50"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="0" x2="799" y1="75" y2="75"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="0" x2="799" y1="100" y2="100"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="0" x2="799" y1="125" y2="125"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="0" x2="799" y1="150" y2="150"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="0" x2="799" y1="175" y2="175"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="0" x2="799" y1="200" y2="200"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="0" x2="799" y1="225" y2="225"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
-  <line x1="0" x2="799" y1="250" y2="250"
-        stroke="rgb(224, 242, 224)" stroke-width="1" />
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+     id="petrinet" width="800" height="600">
+<g id="grid" class="grid">
 </g>
-<g>
-  <line x1="25" y1="25" x2="125" y2="25"
-        stroke="black" stroke-width="2" />
-  <line x1="125" y1="25" x2="225" y2="25"
-        stroke="black" stroke-width="2" />
-  <line x1="225" y1="25" x2="225" y2="125"
-        stroke="black" stroke-width="2" />
-  <line x1="225" y1="125" x2="225" y2="225"
-        stroke="black" stroke-width="2" />
-  <line x1="225" y1="225" x2="125" y2="225"
-        stroke="black" stroke-width="2" />
-  <line x1="125" y1="225" x2="25" y2="225"
-        stroke="black" stroke-width="2" />
-
-  <line x1="25" y1="225" x2="25" y2="125"
-        stroke="black" stroke-width="2" />
-  <line x1="25" y1="125" x2="25" y2="25"
-        stroke="black" stroke-width="2" />
-
-  <circle cx="25" cy="25" r="20"
-          stroke="darkblue" fill="white" stroke-width="2" />
-  <circle cx="225" cy="25" r="20"
-          stroke="darkblue" fill="white" stroke-width="2" />
-  <circle cx="225" cy="225" r="20"
-          stroke="darkblue" fill="white" stroke-width="2" />
-  <circle cx="25" cy="225" r="20"
-          stroke="darkblue" fill="white" stroke-width="2" />
-
-  <!-- pos 4,0 => x=100+25 y=0+25 -->
-  <rect x="105" y="15" width="40" height="20"
-        stroke="darkblue" fill="white" stroke-width="2" />
-  <rect x="215" y="105" width="20" height="40"
-        stroke="darkblue" fill="white" stroke-width="2" />
-  <rect x="105" y="215" width="40" height="20"
-        stroke="darkblue" fill="white" stroke-width="2" />
-  <rect x="15" y="105" width="20" height="40"
-        stroke="darkblue" fill="white" stroke-width="2" />
+<g id="structure" class="structure">
+  <g id="arcs">
+  </g>
+  <g id="nodes">
+  </g>
 </g>
 </svg>
 </div>
