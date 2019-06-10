@@ -28,6 +28,12 @@ svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-transition {
   fill:   rgba(255, 255, 255, 0.8);
 }
 
+/*svg.PetrinetFun .PetrinetFun-structure marker > polygon, */
+svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-arrow {
+  stroke: black;
+  stroke-width: 1;
+  fill: black;
+}
 svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-arc {
   stroke: black;
   stroke-width: 2;
@@ -82,7 +88,7 @@ function exampleClientServer(svgid) {
   structure.addArc(t3, p6, "i");
   structure.addArc(t3, p4, "o");
   structure.addArc(t4, p4, "i");
-  structure.addArc(t4, p5, "i");
+  structure.addArc(t4, p5, "o");
   structure.addArc(t4, p7, "o");
   structure.addArc(t5, p5, "i", [
     { gridX: 12, gridY: 8 }

@@ -97,6 +97,8 @@ interface SVGArc {
     // svgTransition: SVGTransition;
     // svgPlace: SVGPlace;
     coordinates: Array<number>; // alternating x and y
+    arrowT: boolean;
+    arrowP: boolean;
 }
 
 
@@ -127,7 +129,7 @@ class GridLayoutStructure {
         const centerX = (x+0.5) * this.step;
         const centerY = (y+0.5) * this.step;
 
-        var width, height;
+        let width, height;
         switch (style) {
             case TransitionStyle.Horizontal: {
                 width  = 1.0 * this.step;
@@ -181,10 +183,12 @@ class GridLayoutStructure {
             place: place,
             arctype: arctype,
             stopover: stopover,
-            coordinates: [tX, tY]
+            coordinates: [tX, tY],
+            arrowT: arctype == ArcType.Input,
+            arrowP: arctype == ArcType.Output,
         }
 
-        for (var pos of stopover) {
+        for (let pos of stopover) {
             const x = (pos.gridX+0.5) * this.step;
             const y = (pos.gridY+0.5) * this.step;
             arc.coordinates.push(x, y);
@@ -226,7 +230,7 @@ function renderPlacesSVG(svgid: string, places: Array<SVGPlace>) {
         svgnodes.removeChild(svgnodes.lastChild);
     }
 
-    for (var place of places) {
+    for (let place of places) {
         console.log(place);
 
         let p = document.createElementNS(SVG_NS, "circle");
@@ -250,7 +254,7 @@ function renderTransitionsSVG(svgid: string,
     }
     // do NOT remove children of svgnodes here, places are already there
 
-    for (var transition of transitions) {
+    for (let transition of transitions) {
         console.log(transition);
 
         let t = document.createElementNS(SVG_NS, "rect");
@@ -277,12 +281,36 @@ function renderArcsSVG(svgid: string, arcs: Array<SVGArc>) {
         svgarcs.removeChild(svgarcs.lastChild);
     }
 
-    for (var arc of arcs) {
+    const arrowid = svgid+"-arrow";
+    const arrowref = "url(#"+arrowid+")";
+
+    let m = document.createElementNS(SVG_NS, "marker");
+    m.setAttributeNS(null, "class", "PetrinetFun-arrow");
+    m.setAttributeNS(null, "id", arrowid);
+    m.setAttributeNS(null, "markerHeight", "9");
+    m.setAttributeNS(null, "markerWidth", "17");
+    m.setAttributeNS(null, "refX", "16");
+    m.setAttributeNS(null, "refY", "5");
+    m.setAttributeNS(null, "orient", "auto-start-reverse");
+    svgarcs.appendChild(m);
+
+    let arrow = document.createElementNS(SVG_NS, "polygon");
+    arrow.setAttributeNS(null, "points", "14 5, 2 8, 2 2");
+    m.appendChild(arrow);
+
+    for (let arc of arcs) {
         console.log(arc);
 
         let a = document.createElementNS(SVG_NS, "polyline");
         a.setAttributeNS(null, "class", "PetrinetFun-arc");
         a.setAttributeNS(null, "points", arc.coordinates.join(" "));
+
+        if (arc.arrowT) {
+            a.setAttributeNS(null, "marker-start", arrowref);
+        }
+        if (arc.arrowP) {
+            a.setAttributeNS(null, "marker-end", arrowref);
+        }
 
         svgarcs.appendChild(a);
     }
