@@ -46,15 +46,19 @@ function setupPetrinetSVG(svgid: string) {
 }
 
 
+interface GridPosition {
+    gridX: number;
+    gridY: number;
+}
+
+
 interface SVGPlace {
     posX: number;
     posY: number;
     radius: number;
 }
 
-interface GridPlace {
-    gridX: number;
-    gridY: number;
+interface GridPlace extends GridPosition {
 }
 
 
@@ -71,10 +75,28 @@ enum TransitionStyle {
     Square = "q",
 }
 
-interface GridTransition {
-    gridX: number;
-    gridY: number;
+interface GridTransition extends GridPosition {
     style: TransitionStyle;
+}
+
+
+enum ArcType {
+    Input = "i",
+    Output = "o",
+    // Read = "r", Inhibit = "h",... 
+}
+
+interface GridArc {
+    transition: GridTransition;
+    place: GridPlace;
+    arctype: ArcType;
+    stopover: Array<GridPosition>;
+}
+
+interface SVGArc {
+    // svgTransition: SVGTransition;
+    // svgPlace: SVGPlace;
+    coordinates: Array<number>; // alternating x and y
 }
 
 
@@ -83,6 +105,7 @@ class GridLayoutStructure {
 
     places: Array<GridPlace & SVGPlace> = [];
     transitions: Array<GridTransition & SVGTransition> = [];
+    arcs: Array<GridArc & SVGArc> = [];
 
 
     addPlace(x: number, y: number): GridPlace & SVGPlace {
@@ -140,12 +163,46 @@ class GridLayoutStructure {
         return transition;
     }
 
+
+    addArc(transition: GridTransition,
+           place: GridPlace,
+           arctype: ArcType,
+           stopover: Array<GridPosition> = []) : GridArc & SVGArc
+    {
+        //@@@ start and end positions from P and T, instead of re-computing?
+        //@@@ would need SVGPlace/Transition as well as GridPlace/Transition
+        const tX = (transition.gridX+0.5) * this.step;
+        const tY = (transition.gridY+0.5) * this.step;
+        const pX = (place.gridX+0.5) * this.step;
+        const pY = (place.gridY+0.5) * this.step;
+
+        let arc = {
+            transition: transition,
+            place: place,
+            arctype: arctype,
+            stopover: stopover,
+            coordinates: [tX, tY]
+        }
+
+        for (var pos of stopover) {
+            const x = (pos.gridX+0.5) * this.step;
+            const y = (pos.gridY+0.5) * this.step;
+            arc.coordinates.push(x, y);
+        }
+
+        arc.coordinates.push(pX, pY);
+
+        this.arcs.push(arc);
+        return arc;
+    }
+
 }
 
 
 interface SVGLayoutStructure {
     places: Array<SVGPlace>;
     transitions: Array<SVGTransition>;
+    arcs: Array<SVGArc>;
 }
 
 
@@ -153,6 +210,7 @@ function renderStructureSVG(svgid: string, structure: SVGLayoutStructure) {
     setupPetrinetSVG(svgid);
     renderPlacesSVG(svgid, structure.places);
     renderTransitionsSVG(svgid, structure.transitions);
+    renderArcsSVG(svgid, structure.arcs);
 }
 
 
@@ -203,5 +261,29 @@ function renderTransitionsSVG(svgid: string,
         t.setAttributeNS(null, "height", String(transition.height));
 
         svgnodes.appendChild(t);
+    }
+}
+
+
+function renderArcsSVG(svgid: string, arcs: Array<SVGArc>) {
+
+    const svgarcs = document.getElementById(svgid+"-arcs");
+    if (!svgarcs) {
+        console.error("Element '"+svgid+"'-arcs not found.");
+        return;
+    }
+
+    while (svgarcs.lastChild) {
+        svgarcs.removeChild(svgarcs.lastChild);
+    }
+
+    for (var arc of arcs) {
+        console.log(arc);
+
+        let a = document.createElementNS(SVG_NS, "polyline");
+        a.setAttributeNS(null, "class", "PetrinetFun-arc");
+        a.setAttributeNS(null, "points", arc.coordinates.join(" "));
+
+        svgarcs.appendChild(a);
     }
 }

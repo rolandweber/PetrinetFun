@@ -28,9 +28,10 @@ svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-transition {
   fill:   rgba(255, 255, 255, 0.8);
 }
 
-svg.PetrinetFun .structure .arc {
+svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-arc {
   stroke: black;
   stroke-width: 2;
+  fill: none;
 }
 </style>
 
@@ -51,21 +52,44 @@ function exampleClientServer(svgid) {
   p0 = structure.addPlace(2, 0);
   p1 = structure.addPlace(2, 4);
   p2 = structure.addPlace(2, 8);
-
   p3 = structure.addPlace(10, 0);
   p4 = structure.addPlace(10, 4);
   p5 = structure.addPlace(10, 8);
-
   p6 = structure.addPlace(6, 2);
   p7 = structure.addPlace(6, 6);
 
   t0 = structure.addTransition(2, 2, "h");
   t1 = structure.addTransition(2, 6, "h");
   t2 = structure.addTransition(0, 4, "v");
-
   t3 = structure.addTransition(10, 2, "h");
   t4 = structure.addTransition(10, 6, "h");
   t5 = structure.addTransition(12, 4, "v");
+
+  structure.addArc(t0, p0, "i");
+  structure.addArc(t0, p1, "o");
+  structure.addArc(t0, p6, "o");
+  structure.addArc(t1, p1, "i");
+  structure.addArc(t1, p7, "i");
+  structure.addArc(t1, p2, "o");
+  structure.addArc(t2, p2, "i", [
+    { gridX: 0, gridY: 8 }
+  ]);
+  structure.addArc(t2, p0, "o", [
+    { gridX: 0, gridY: 0 }
+  ]);
+
+  structure.addArc(t3, p3, "i");
+  structure.addArc(t3, p6, "i");
+  structure.addArc(t3, p4, "o");
+  structure.addArc(t4, p4, "i");
+  structure.addArc(t4, p5, "i");
+  structure.addArc(t4, p7, "o");
+  structure.addArc(t5, p5, "i", [
+    { gridX: 12, gridY: 8 }
+  ]);
+  structure.addArc(t5, p3, "o", [
+    { gridX: 12, gridY: 0 }
+  ]);
 
   renderStructureSVG(svgid, structure);
 }
