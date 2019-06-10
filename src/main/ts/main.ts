@@ -44,3 +44,71 @@ function setupPetrinetSVG(svgid: string) {
     g.setAttributeNS(null, "class", "PetrinetFun-marking");
     svg.appendChild(g);
 }
+
+
+interface SVGPlace {
+    posX: number;
+    posY: number;
+    radius: number;
+}
+
+interface GridPlace {
+    gridX: number;
+    gridY: number;
+}
+
+
+class GridLayoutStructure {
+    protected readonly step = 50;
+
+    places: Array<GridPlace & SVGPlace> = [];
+
+    addPlace(x: number, y: number): GridPlace & SVGPlace {
+        let place = {
+            gridX: x, gridY: y,
+            posX: (x+0.5) * this.step,
+            posY: (y+0.5) * this.step,
+            radius: 0.4 * this.step
+        }
+        this.places.push(place);
+        return place;
+    }
+
+}
+
+
+interface SVGLayoutStructure {
+    places: Array<SVGPlace>;
+}
+
+
+function renderStructureSVG(svgid: string, structure: SVGLayoutStructure) {
+    setupPetrinetSVG(svgid);
+    renderPlacesSVG(svgid, structure.places);
+}
+
+
+function renderPlacesSVG(svgid: string, places: Array<SVGPlace>) {
+
+    const svgnodes = document.getElementById(svgid+"-nodes");
+    if (!svgnodes) {
+        console.error("Element '"+svgid+"'-nodes not found.");
+        return;
+    }
+
+    while (svgnodes.lastChild) {
+        svgnodes.removeChild(svgnodes.lastChild);
+    }
+
+    for (var place of places) {
+        console.log(place);
+
+        let p = document.createElementNS(SVG_NS, "circle");
+        p.setAttributeNS(null, "class", "PetrinetFun-place");
+        p.setAttributeNS(null, "cx", String(place.posX));
+        p.setAttributeNS(null, "cy", String(place.posY));
+        p.setAttributeNS(null, "r", String(place.radius));
+
+        svgnodes.appendChild(p);
+    }
+}

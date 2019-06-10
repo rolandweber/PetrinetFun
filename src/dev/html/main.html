@@ -20,8 +20,8 @@ div.center {
   text-align: center;
 }
 
-svg.PetrinetFun .structure .place,
-svg.PetrinetFun .structure .transition {
+svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-place,
+svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-transition {
   stroke: darkblue;
   stroke-width: 2;
 /* transparency lets arcs shine through... */
@@ -38,9 +38,27 @@ svg.PetrinetFun .structure .arc {
 
 <script>
 function init() {
-  setupPetrinetSVG("pnf1");
+  exampleClientServer("pnf1");
+  //setupPetrinetSVG("pnf1");
   setupPetrinetSVG("pnf2");
 }
+
+function exampleClientServer(svgid) {
+  var structure = new GridLayoutStructure();
+  p0 = structure.addPlace(2, 0);
+  p1 = structure.addPlace(2, 4);
+  p2 = structure.addPlace(2, 8);
+
+  p3 = structure.addPlace(8, 0);
+  p4 = structure.addPlace(8, 4);
+  p5 = structure.addPlace(8, 8);
+
+  p6 = structure.addPlace(5, 2);
+  p7 = structure.addPlace(5, 6);
+
+  renderStructureSVG(svgid, structure);
+}
+
 </script>
 </head><!-- ============================================================== -->
 
