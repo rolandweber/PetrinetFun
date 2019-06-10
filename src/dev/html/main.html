@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta name="viewport" content="width=device-width">
+<title>dev/main - Petrinet Fun</title>
+<style type="text/css">
+body {
+  background-color: #f8f8f8;
+}
+
+div.stage {
+  display: inline-block;
+  position: relative;
+  border: 1px solid #f0f0f0;
+  background-color: #ffffff;
+}
+
+div.center {
+  text-align: center;
+}
+
+svg.PetrinetFun .structure .place,
+svg.PetrinetFun .structure .transition {
+  stroke: darkblue;
+  stroke-width: 2;
+/* transparency lets arcs shine through... */
+  fill:   rgba(255, 255, 255, 0.8);
+}
+
+svg.PetrinetFun .structure .arc {
+  stroke: black;
+  stroke-width: 2;
+}
+</style>
+
+<script src="../../../target/js/main.js"></script>
+
+<script>
+function init() {
+  setupPetrinetSVG("pnf1");
+  setupPetrinetSVG("pnf2");
+}
+</script>
+</head><!-- ============================================================== -->
+
+<body onload="init()">
+<h1>Petrinet Fun - dev/main</h1>
+
+<p>
+Main page for local development.
+This loads compiled TypeScript files from the <code>target/</code> directory.
+</p>
+
+<h2>One</h2>
+<div class="center">
+<div class="stage" style="width: 800px; height: 600px;">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+     id="pnf1" width="800" height="600">
+</svg>
+</div>
+</div>
+
+
+<h2>Two</h2>
+<div class="center">
+<div class="stage" style="width: 400px; height: 300px;">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+     id="pnf2" width="400" height="300">
+</svg>
+</div>
+</div>
+
+</body>
+</html>
+
