@@ -58,10 +58,32 @@ interface GridPlace {
 }
 
 
+interface SVGTransition {
+    posLeft: number;
+    posTop: number;
+    width: number;
+    height: number;
+}
+
+enum TransitionStyle {
+    Horizontal = "h",
+    Vertical = "v",
+    Square = "q",
+}
+
+interface GridTransition {
+    gridX: number;
+    gridY: number;
+    style: TransitionStyle;
+}
+
+
 class GridLayoutStructure {
-    protected readonly step = 50;
+    protected readonly step = 60;
 
     places: Array<GridPlace & SVGPlace> = [];
+    transitions: Array<GridTransition & SVGTransition> = [];
+
 
     addPlace(x: number, y: number): GridPlace & SVGPlace {
         let place = {
@@ -74,17 +96,63 @@ class GridLayoutStructure {
         return place;
     }
 
+
+    addTransition(x: number, y: number,
+                  style: TransitionStyle = TransitionStyle.Square)
+    : GridTransition & SVGTransition {
+
+        const centerX = (x+0.5) * this.step;
+        const centerY = (y+0.5) * this.step;
+
+        var width, height;
+        switch (style) {
+            case TransitionStyle.Horizontal: {
+                width  = 1.0 * this.step;
+                height = 0.3 * this.step;
+                break;
+            }
+            case TransitionStyle.Vertical: {
+                width  = 0.3 * this.step;
+                height = 1.0 * this.step;
+                break;
+            }
+            case TransitionStyle.Square: {
+                width  = 0.6 * this.step;
+                height = 0.6 * this.step;
+                break;
+            }
+            default: {
+                // something visible but ugly
+                width  = 0.2 * this.step;
+                height = 0.2 * this.step;
+                break;
+            }
+        }
+
+        let transition = {
+            gridX: x, gridY: y, style: style,
+            posLeft: centerX - width/2,
+            posTop:  centerY - height/2,
+            width:   width,
+            height:  height
+        }
+        this.transitions.push(transition);
+        return transition;
+    }
+
 }
 
 
 interface SVGLayoutStructure {
     places: Array<SVGPlace>;
+    transitions: Array<SVGTransition>;
 }
 
 
 function renderStructureSVG(svgid: string, structure: SVGLayoutStructure) {
     setupPetrinetSVG(svgid);
     renderPlacesSVG(svgid, structure.places);
+    renderTransitionsSVG(svgid, structure.transitions);
 }
 
 
@@ -110,5 +178,30 @@ function renderPlacesSVG(svgid: string, places: Array<SVGPlace>) {
         p.setAttributeNS(null, "r", String(place.radius));
 
         svgnodes.appendChild(p);
+    }
+}
+
+
+function renderTransitionsSVG(svgid: string,
+                              transitions: Array<SVGTransition>) {
+
+    const svgnodes = document.getElementById(svgid+"-nodes");
+    if (!svgnodes) {
+        console.error("Element '"+svgid+"'-nodes not found.");
+        return;
+    }
+    // do NOT remove children of svgnodes here, places are already there
+
+    for (var transition of transitions) {
+        console.log(transition);
+
+        let t = document.createElementNS(SVG_NS, "rect");
+        t.setAttributeNS(null, "class", "PetrinetFun-transition");
+        t.setAttributeNS(null, "x", String(transition.posLeft));
+        t.setAttributeNS(null, "y", String(transition.posTop));
+        t.setAttributeNS(null, "width", String(transition.width));
+        t.setAttributeNS(null, "height", String(transition.height));
+
+        svgnodes.appendChild(t);
     }
 }

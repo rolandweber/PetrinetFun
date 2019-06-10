@@ -41,6 +41,8 @@ function init() {
   exampleClientServer("pnf1");
   //setupPetrinetSVG("pnf1");
   setupPetrinetSVG("pnf2");
+
+  exampleClientServer("pnf2");
 }
 
 function exampleClientServer(svgid) {
@@ -49,12 +51,20 @@ function exampleClientServer(svgid) {
   p1 = structure.addPlace(2, 4);
   p2 = structure.addPlace(2, 8);
 
-  p3 = structure.addPlace(8, 0);
-  p4 = structure.addPlace(8, 4);
-  p5 = structure.addPlace(8, 8);
+  p3 = structure.addPlace(10, 0);
+  p4 = structure.addPlace(10, 4);
+  p5 = structure.addPlace(10, 8);
 
-  p6 = structure.addPlace(5, 2);
-  p7 = structure.addPlace(5, 6);
+  p6 = structure.addPlace(6, 2);
+  p7 = structure.addPlace(6, 6);
+
+  t0 = structure.addTransition(2, 2, "h");
+  t1 = structure.addTransition(2, 6, "h");
+  t2 = structure.addTransition(0, 4, "v");
+
+  t3 = structure.addTransition(10, 2, "h");
+  t4 = structure.addTransition(10, 6, "h");
+  t5 = structure.addTransition(12, 4, "v");
 
   renderStructureSVG(svgid, structure);
 }
@@ -72,9 +82,9 @@ This loads compiled TypeScript files from the <code>target/</code> directory.
 
 <h2>One</h2>
 <div class="center">
-<div class="stage" style="width: 800px; height: 600px;">
+<div class="stage" style="width: 780px; height: 560px;">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
-     id="pnf1" width="800" height="600">
+     id="pnf1" width="780" height="560" viewBox="0 -10 780 560">
 </svg>
 </div>
 </div>
@@ -82,9 +92,9 @@ This loads compiled TypeScript files from the <code>target/</code> directory.
 
 <h2>Two</h2>
 <div class="center">
-<div class="stage" style="width: 400px; height: 300px;">
+<div class="stage" style="width: 390; height: 280px;">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
-     id="pnf2" width="400" height="300">
+     id="pnf2" width="390" height="280" viewBox="0 -10 780 560">
 </svg>
 </div>
 </div>
