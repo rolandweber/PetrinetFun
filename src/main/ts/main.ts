@@ -289,6 +289,7 @@ function renderArcsSVG(svgid: string, arcs: Array<SVGArc>) {
     m.setAttributeNS(null, "id", arrowid);
     m.setAttributeNS(null, "markerHeight", "9");
     m.setAttributeNS(null, "markerWidth", "17");
+    //m.setAttributeNS(null, "markerUnits", "userSpaceOnUse");
     m.setAttributeNS(null, "refX", "16");
     m.setAttributeNS(null, "refY", "5");
     m.setAttributeNS(null, "orient", "auto-start-reverse");

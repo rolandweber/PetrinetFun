@@ -45,8 +45,7 @@ svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-arc {
 
 <script>
 function init() {
-  exampleClientServer("pnf1");
-  //setupPetrinetSVG("pnf1");
+  exampleDeadlock("pnf1");
   setupPetrinetSVG("pnf2");
 
   exampleClientServer("pnf2");
@@ -96,6 +95,58 @@ function exampleClientServer(svgid) {
   structure.addArc(t5, p3, "o", [
     { gridX: 12, gridY: 0 }
   ]);
+
+  renderStructureSVG(svgid, structure);
+}
+
+
+function exampleDeadlock(svgid) {
+  var structure = new GridLayoutStructure();
+  p0 = structure.addPlace(0, 0);
+  p1 = structure.addPlace(2, 2);
+  p2 = structure.addPlace(2, 8);
+  p3 = structure.addPlace(12, 0);
+  p4 = structure.addPlace(10, 2);
+  p5 = structure.addPlace(10, 8);
+  p6 = structure.addPlace(4, 4);
+  p7 = structure.addPlace(8, 4);
+
+  t0 = structure.addTransition(2, 0, "h");
+  t1 = structure.addTransition(2, 4, "h");
+  t2 = structure.addTransition(0, 6, "v");
+  t3 = structure.addTransition(10, 0, "h");
+  t4 = structure.addTransition(10, 4, "h");
+  t5 = structure.addTransition(12, 6, "v");
+
+  structure.addArc(t0, p0, "i");
+  structure.addArc(t0, p7, "i");
+  structure.addArc(t0, p1, "o");
+  structure.addArc(t1, p1, "i");
+  structure.addArc(t1, p6, "i");
+  structure.addArc(t1, p2, "o");
+  structure.addArc(t2, p2, "i", [
+    { gridX: 0, gridY: 8 }
+  ]);
+  structure.addArc(t2, p6, "o");
+  structure.addArc(t2, p7, "o", [
+    { gridX: 4, gridY: 6 }
+  ]);
+  structure.addArc(t2, p0, "o");
+
+  structure.addArc(t3, p3, "i");
+  structure.addArc(t3, p6, "i");
+  structure.addArc(t3, p4, "o");
+  structure.addArc(t4, p4, "i");
+  structure.addArc(t4, p7, "i");
+  structure.addArc(t4, p5, "o");
+  structure.addArc(t5, p5, "i", [
+    { gridX: 12, gridY: 8 }
+  ]);
+  structure.addArc(t5, p6, "o", [
+    { gridX: 8, gridY: 6 }
+  ]);
+  structure.addArc(t5, p7, "o");
+  structure.addArc(t5, p3, "o");
 
   renderStructureSVG(svgid, structure);
 }
