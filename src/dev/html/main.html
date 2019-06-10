@@ -45,15 +45,15 @@ svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-arc {
 
 <script>
 function init() {
-  exampleDeadlock("pnf1");
-  setupPetrinetSVG("pnf2");
-
-  exampleClientServer("pnf2");
-  exampleClientServer("pnf3");
+  exampleClientServer("pnf1");
+  exampleDeadlock("pnf2");
+  exampleIntroductory("pnf3");
 }
+
 
 function exampleClientServer(svgid) {
   var structure = new GridLayoutStructure();
+
   p0 = structure.addPlace(2, 0);
   p1 = structure.addPlace(2, 4);
   p2 = structure.addPlace(2, 8);
@@ -102,6 +102,7 @@ function exampleClientServer(svgid) {
 
 function exampleDeadlock(svgid) {
   var structure = new GridLayoutStructure();
+
   p0 = structure.addPlace(0, 0);
   p1 = structure.addPlace(2, 2);
   p2 = structure.addPlace(2, 8);
@@ -147,6 +148,52 @@ function exampleDeadlock(svgid) {
   ]);
   structure.addArc(t5, p7, "o");
   structure.addArc(t5, p3, "o");
+
+  renderStructureSVG(svgid, structure);
+}
+
+function exampleIntroductory(svgid) {
+  var structure = new GridLayoutStructure();
+
+  p0 = structure.addPlace(5, 0);
+  p1 = structure.addPlace(0, 3);
+  p2 = structure.addPlace(2, 3);
+  p3 = structure.addPlace(8, 3);
+  p4 = structure.addPlace(10, 3);
+  p5 = structure.addPlace(7, 4);
+
+  t0 = structure.addTransition(2, 0, "h");
+  t1 = structure.addTransition(2, 6, "h");
+  t2 = structure.addTransition(8, 0, "h");
+  t3 = structure.addTransition(8, 6, "h");
+
+  structure.addArc(t0, p0, "i");
+  structure.addArc(t0, p1, "i", [
+    { gridX: 0, gridY: 0 }
+  ]);
+  structure.addArc(t0, p2, "o");
+  structure.addArc(t1, p2, "i");
+  structure.addArc(t1, p0, "o", [
+    { gridX: 4, gridY: 6 }
+  ]);
+  structure.addArc(t1, p1, "o", [
+    { gridX: 0, gridY: 6 }
+  ]);
+  structure.addArc(t1, p5, "o");
+
+  structure.addArc(t2, p0, "i");
+  structure.addArc(t2, p4, "i", [
+    { gridX: 10, gridY: 0 }
+  ]);
+  structure.addArc(t2, p5, "i");
+  structure.addArc(t2, p3, "o");
+  structure.addArc(t3, p3, "i");
+  structure.addArc(t3, p0, "o", [
+    { gridX: 6, gridY: 6 }
+  ]);
+  structure.addArc(t3, p4, "o", [
+    { gridX: 10, gridY: 6 }
+  ]);
 
   renderStructureSVG(svgid, structure);
 }
