@@ -161,11 +161,20 @@ class SVGLayoutStructure {
     }
 
 
+    protected x2svg(gridX: number) : number {
+        return (gridX+0.5) * this.step;
+    }
+
+    protected y2svg(gridY: number) : number {
+        return (gridY+0.5) * this.step;
+    }
+
+
     protected positionPlaces(gplaces: Array<GridPlace>) {
         this.places = gplaces.map(function(gp) : SVGPlace {
             return {
-                posX: (gp.gridX+0.5) * this.step,
-                posY: (gp.gridY+0.5) * this.step,
+                posX: this.x2svg(gp.gridX),
+                posY: this.y2svg(gp.gridY),
                 radius: 0.4 * this.step
             }
         }, this)
@@ -198,8 +207,8 @@ class SVGLayoutStructure {
                     break;
                 }
             }
-            const centerX = (gt.gridX+0.5) * this.step;
-            const centerY = (gt.gridY+0.5) * this.step;
+            const centerX = this.x2svg(gt.gridX);
+            const centerY = this.y2svg(gt.gridY);
 
             return {
                 posLeft: centerX - width/2,
@@ -215,10 +224,10 @@ class SVGLayoutStructure {
         this.arcs = garcs.map(function(ga) : SVGArc {
             //@@@ start/end positions from P and T, without re-computing?
             //@@@ would need to map Grid P/T to SVG P/T
-            const tX = (ga.transition.gridX+0.5) * this.step;
-            const tY = (ga.transition.gridY+0.5) * this.step;
-            const pX = (ga.place.gridX+0.5) * this.step;
-            const pY = (ga.place.gridY+0.5) * this.step;
+            const tX = this.x2svg(ga.transition.gridX);
+            const tY = this.y2svg(ga.transition.gridY);
+            const pX = this.x2svg(ga.place.gridX);
+            const pY = this.y2svg(ga.place.gridY);
 
             let arc = {
                 coordinates: [tX, tY],
@@ -227,9 +236,8 @@ class SVGLayoutStructure {
             }
 
             for (let pos of ga.stopover) {
-                const x = (pos.gridX+0.5) * this.step;
-                const y = (pos.gridY+0.5) * this.step;
-                arc.coordinates.push(x, y);
+                arc.coordinates.push(this.x2svg(pos.gridX),
+                                     this.y2svg(pos.gridY));
             }
 
             arc.coordinates.push(pX, pY);
