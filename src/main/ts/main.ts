@@ -51,22 +51,7 @@ interface GridPosition {
     gridY: number;
 }
 
-
-interface SVGPlace {
-    posX: number;
-    posY: number;
-    radius: number;
-}
-
 interface GridPlace extends GridPosition {
-}
-
-
-interface SVGTransition {
-    posLeft: number;
-    posTop: number;
-    width: number;
-    height: number;
 }
 
 enum TransitionStyle {
@@ -93,29 +78,16 @@ interface GridArc {
     stopover: Array<GridPosition>;
 }
 
-interface SVGArc {
-    // svgTransition: SVGTransition;
-    // svgPlace: SVGPlace;
-    coordinates: Array<number>; // alternating x and y
-    arrowT: boolean;
-    arrowP: boolean;
-}
-
 
 class GridLayoutStructure {
-    protected readonly step = 60;
-
-    places: Array<GridPlace & SVGPlace> = [];
-    transitions: Array<GridTransition & SVGTransition> = [];
-    arcs: Array<GridArc & SVGArc> = [];
+    places: Array<GridPlace> = [];
+    transitions: Array<GridTransition> = [];
+    arcs: Array<GridArc> = [];
 
 
-    addPlace(x: number, y: number): GridPlace & SVGPlace {
+    addPlace(x: number, y: number): GridPlace {
         let place = {
-            gridX: x, gridY: y,
-            posX: (x+0.5) * this.step,
-            posY: (y+0.5) * this.step,
-            radius: 0.4 * this.step
+            gridX: x, gridY: y
         }
         this.places.push(place);
         return place;
@@ -124,42 +96,10 @@ class GridLayoutStructure {
 
     addTransition(x: number, y: number,
                   style: TransitionStyle = TransitionStyle.Square)
-    : GridTransition & SVGTransition {
-
-        const centerX = (x+0.5) * this.step;
-        const centerY = (y+0.5) * this.step;
-
-        let width, height;
-        switch (style) {
-            case TransitionStyle.Horizontal: {
-                width  = 1.0 * this.step;
-                height = 0.3 * this.step;
-                break;
-            }
-            case TransitionStyle.Vertical: {
-                width  = 0.3 * this.step;
-                height = 1.0 * this.step;
-                break;
-            }
-            case TransitionStyle.Square: {
-                width  = 0.6 * this.step;
-                height = 0.6 * this.step;
-                break;
-            }
-            default: {
-                // something visible but ugly
-                width  = 0.2 * this.step;
-                height = 0.2 * this.step;
-                break;
-            }
-        }
+    : GridTransition {
 
         let transition = {
-            gridX: x, gridY: y, style: style,
-            posLeft: centerX - width/2,
-            posTop:  centerY - height/2,
-            width:   width,
-            height:  height
+            gridX: x, gridY: y, style: style
         }
         this.transitions.push(transition);
         return transition;
@@ -169,33 +109,14 @@ class GridLayoutStructure {
     addArc(transition: GridTransition,
            place: GridPlace,
            arctype: ArcType,
-           stopover: Array<GridPosition> = []) : GridArc & SVGArc
+           stopover: Array<GridPosition> = []) : GridArc
     {
-        //@@@ start and end positions from P and T, instead of re-computing?
-        //@@@ would need SVGPlace/Transition as well as GridPlace/Transition
-        const tX = (transition.gridX+0.5) * this.step;
-        const tY = (transition.gridY+0.5) * this.step;
-        const pX = (place.gridX+0.5) * this.step;
-        const pY = (place.gridY+0.5) * this.step;
-
         let arc = {
             transition: transition,
             place: place,
             arctype: arctype,
-            stopover: stopover,
-            coordinates: [tX, tY],
-            arrowT: arctype == ArcType.Input,
-            arrowP: arctype == ArcType.Output,
+            stopover: stopover
         }
-
-        for (let pos of stopover) {
-            const x = (pos.gridX+0.5) * this.step;
-            const y = (pos.gridY+0.5) * this.step;
-            arc.coordinates.push(x, y);
-        }
-
-        arc.coordinates.push(pX, pY);
-
         this.arcs.push(arc);
         return arc;
     }
@@ -203,18 +124,130 @@ class GridLayoutStructure {
 }
 
 
-interface SVGLayoutStructure {
-    places: Array<SVGPlace>;
-    transitions: Array<SVGTransition>;
-    arcs: Array<SVGArc>;
+
+interface SVGPlace {
+    posX: number;
+    posY: number;
+    radius: number;
+}
+
+interface SVGTransition {
+    posLeft: number;
+    posTop: number;
+    width: number;
+    height: number;
+}
+
+interface SVGArc {
+    // svgTransition: SVGTransition;
+    // svgPlace: SVGPlace;
+    coordinates: Array<number>; // alternating x and y
+    arrowT: boolean;
+    arrowP: boolean;
 }
 
 
-function renderStructureSVG(svgid: string, structure: SVGLayoutStructure) {
+class SVGLayoutStructure {
+    protected readonly step = 60;
+
+    places: Array<SVGPlace>;
+    transitions: Array<SVGTransition>;
+    arcs: Array<SVGArc>;
+
+    constructor(structure: GridLayoutStructure) {
+        this.positionPlaces(structure.places);
+        this.positionTransitions(structure.transitions);
+        this.positionArcs(structure.arcs);
+    }
+
+
+    protected positionPlaces(gplaces: Array<GridPlace>) {
+        this.places = gplaces.map(function(gp) : SVGPlace {
+            return {
+                posX: (gp.gridX+0.5) * this.step,
+                posY: (gp.gridY+0.5) * this.step,
+                radius: 0.4 * this.step
+            }
+        }, this)
+    }
+
+
+    protected positionTransitions(gtransitions: Array<GridTransition>) {
+        this.transitions = gtransitions.map(function(gt) : SVGTransition {
+            let width, height;
+            switch (gt.style) {
+                case TransitionStyle.Horizontal: {
+                    width  = 1.0 * this.step;
+                    height = 0.3 * this.step;
+                    break;
+                }
+                case TransitionStyle.Vertical: {
+                    width  = 0.3 * this.step;
+                    height = 1.0 * this.step;
+                    break;
+                }
+                case TransitionStyle.Square: {
+                    width  = 0.6 * this.step;
+                    height = 0.6 * this.step;
+                    break;
+                }
+                default: {
+                    // something visible but ugly
+                    width  = 0.2 * this.step;
+                    height = 0.2 * this.step;
+                    break;
+                }
+            }
+            const centerX = (gt.gridX+0.5) * this.step;
+            const centerY = (gt.gridY+0.5) * this.step;
+
+            return {
+                posLeft: centerX - width/2,
+                posTop:  centerY - height/2,
+                width:   width,
+                height:  height
+            }
+        }, this)
+    }
+
+
+    protected positionArcs(garcs: Array<GridArc>) {
+        this.arcs = garcs.map(function(ga) : SVGArc {
+            //@@@ start/end positions from P and T, without re-computing?
+            //@@@ would need to map Grid P/T to SVG P/T
+            const tX = (ga.transition.gridX+0.5) * this.step;
+            const tY = (ga.transition.gridY+0.5) * this.step;
+            const pX = (ga.place.gridX+0.5) * this.step;
+            const pY = (ga.place.gridY+0.5) * this.step;
+
+            let arc = {
+                coordinates: [tX, tY],
+                arrowT: ga.arctype == ArcType.Input,
+                arrowP: ga.arctype == ArcType.Output,
+            }
+
+            for (let pos of ga.stopover) {
+                const x = (pos.gridX+0.5) * this.step;
+                const y = (pos.gridY+0.5) * this.step;
+                arc.coordinates.push(x, y);
+            }
+
+            arc.coordinates.push(pX, pY);
+
+            return arc;
+        }, this)
+    }
+
+}
+
+
+function renderStructureSVG(svgid: string, structure: GridLayoutStructure) {
+    const svgstructure = new SVGLayoutStructure(structure);
+
     setupPetrinetSVG(svgid);
-    renderPlacesSVG(svgid, structure.places);
-    renderTransitionsSVG(svgid, structure.transitions);
-    renderArcsSVG(svgid, structure.arcs);
+    renderPlacesSVG(svgid, svgstructure.places);
+    renderTransitionsSVG(svgid, svgstructure.transitions);
+    renderArcsSVG(svgid, svgstructure.arcs);
 }
 
 
