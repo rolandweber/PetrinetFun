@@ -1,50 +1,12 @@
-// not much here yet
+/*
+ * This work is released into the Public Domain under the
+ * terms of the Creative Commons CC0 1.0 Universal license.
+ * https://creativecommons.org/publicdomain/zero/1.0/
+ */
 
-const SVG_NS = "http://www.w3.org/2000/svg";
-
-
-function setupPetrinetSVG(svgid: string) {
-
-    const svg = document.getElementById(svgid);
-    if (!svg) {
-        console.error("Element '"+svgid+"' not found.");
-        return;
-    }
-
-    while (svg.lastChild) {
-        svg.removeChild(svg.lastChild);
-    }
-    if (!svg.classList.contains("PetrinetFun")) {
-        svg.classList.add("PetrinetFun");
-    }
-
-    let g = document.createElementNS(SVG_NS, "g");
-    g.setAttributeNS(null, "id", svgid+"-backdrop");
-    g.setAttributeNS(null, "class", "PetrinetFun-backdrop");
-    svg.appendChild(g);
-
-    g = document.createElementNS(SVG_NS, "g");
-    g.setAttributeNS(null, "id", svgid+"-structure");
-    g.setAttributeNS(null, "class", "PetrinetFun-structure");
-    svg.appendChild(g);
-    {
-        let g2 = document.createElementNS(SVG_NS, "g");
-        g2.setAttributeNS(null, "id", svgid+"-arcs");
-        g2.setAttributeNS(null, "class", "PetrinetFun-arcs");
-        g.appendChild(g2);
-
-        g2 = document.createElementNS(SVG_NS, "g");
-        g2.setAttributeNS(null, "id", svgid+"-nodes");
-        g2.setAttributeNS(null, "class", "PetrinetFun-nodes");
-        g.appendChild(g2);
-    }
-
-    g = document.createElementNS(SVG_NS, "g");
-    g.setAttributeNS(null, "id", svgid+"-marking");
-    g.setAttributeNS(null, "class", "PetrinetFun-marking");
-    svg.appendChild(g);
-}
-
+// =============================================================================
+// Grid layout: grid coordinates
+// =============================================================================
 
 interface GridPosition {
     gridX: number;
@@ -123,6 +85,10 @@ class GridLayoutStructure {
 
 }
 
+
+// =============================================================================
+// SVG layout: point coordinates
+// =============================================================================
 
 
 interface SVGPlace {
@@ -249,111 +215,188 @@ class SVGLayoutStructure {
 }
 
 
+// =============================================================================
+// SVG rendering: DOM nodes
+// =============================================================================
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+
 function renderStructureSVG(svgid: string, structure: GridLayoutStructure) {
-    const svgstructure = new SVGLayoutStructure(structure);
+    const svglayout = new SVGLayoutStructure(structure);
 
-    setupPetrinetSVG(svgid);
-    renderPlacesSVG(svgid, svgstructure.places);
-    renderTransitionsSVG(svgid, svgstructure.transitions);
-    renderArcsSVG(svgid, svgstructure.arcs);
+    const renderer = new SVGRenderer(svglayout, svgid);
+    renderer.renderStructure();
 }
 
 
-function renderPlacesSVG(svgid: string, places: Array<SVGPlace>) {
+class SVGRenderer {
+    svg_layout: SVGLayoutStructure;
+    svg_id: string;
 
-    const svgnodes = document.getElementById(svgid+"-nodes");
-    if (!svgnodes) {
-        console.error("Element '"+svgid+"'-nodes not found.");
-        return;
+    constructor(layout: SVGLayoutStructure, svgid: string) {
+        this.svg_layout = layout;
+        this.svg_id = svgid;
+
+        this.reset();
     }
 
-    while (svgnodes.lastChild) {
-        svgnodes.removeChild(svgnodes.lastChild);
-    }
 
-    for (let place of places) {
-        console.log(place);
+    reset() {
+        //@@@ save the created nodes in the class, to avoid the lookup later?
 
-        let p = document.createElementNS(SVG_NS, "circle");
-        p.setAttributeNS(null, "class", "PetrinetFun-place");
-        p.setAttributeNS(null, "cx", String(place.posX));
-        p.setAttributeNS(null, "cy", String(place.posY));
-        p.setAttributeNS(null, "r", String(place.radius));
-
-        svgnodes.appendChild(p);
-    }
-}
-
-
-function renderTransitionsSVG(svgid: string,
-                              transitions: Array<SVGTransition>) {
-
-    const svgnodes = document.getElementById(svgid+"-nodes");
-    if (!svgnodes) {
-        console.error("Element '"+svgid+"'-nodes not found.");
-        return;
-    }
-    // do NOT remove children of svgnodes here, places are already there
-
-    for (let transition of transitions) {
-        console.log(transition);
-
-        let t = document.createElementNS(SVG_NS, "rect");
-        t.setAttributeNS(null, "class", "PetrinetFun-transition");
-        t.setAttributeNS(null, "x", String(transition.posLeft));
-        t.setAttributeNS(null, "y", String(transition.posTop));
-        t.setAttributeNS(null, "width", String(transition.width));
-        t.setAttributeNS(null, "height", String(transition.height));
-
-        svgnodes.appendChild(t);
-    }
-}
-
-
-function renderArcsSVG(svgid: string, arcs: Array<SVGArc>) {
-
-    const svgarcs = document.getElementById(svgid+"-arcs");
-    if (!svgarcs) {
-        console.error("Element '"+svgid+"'-arcs not found.");
-        return;
-    }
-
-    while (svgarcs.lastChild) {
-        svgarcs.removeChild(svgarcs.lastChild);
-    }
-
-    const arrowid = svgid+"-arrow";
-    const arrowref = "url(#"+arrowid+")";
-
-    let m = document.createElementNS(SVG_NS, "marker");
-    m.setAttributeNS(null, "class", "PetrinetFun-arrow");
-    m.setAttributeNS(null, "id", arrowid);
-    m.setAttributeNS(null, "markerHeight", "9");
-    m.setAttributeNS(null, "markerWidth", "17");
-    //m.setAttributeNS(null, "markerUnits", "userSpaceOnUse");
-    m.setAttributeNS(null, "refX", "16");
-    m.setAttributeNS(null, "refY", "5");
-    m.setAttributeNS(null, "orient", "auto-start-reverse");
-    svgarcs.appendChild(m);
-
-    let arrow = document.createElementNS(SVG_NS, "polygon");
-    arrow.setAttributeNS(null, "points", "14 5, 2 8, 2 2");
-    m.appendChild(arrow);
-
-    for (let arc of arcs) {
-        console.log(arc);
-
-        let a = document.createElementNS(SVG_NS, "polyline");
-        a.setAttributeNS(null, "class", "PetrinetFun-arc");
-        a.setAttributeNS(null, "points", arc.coordinates.join(" "));
-
-        if (arc.arrowT) {
-            a.setAttributeNS(null, "marker-start", arrowref);
+        const svg = document.getElementById(this.svg_id);
+        if (!svg) {
+            console.error("Element '"+this.svg_id+"' not found.");
+            return;
         }
-        if (arc.arrowP) {
-            a.setAttributeNS(null, "marker-end", arrowref);
+        this.removeChildren(svg);
+
+        if (!svg.classList.contains("PetrinetFun")) {
+            svg.classList.add("PetrinetFun");
         }
 
-        svgarcs.appendChild(a);
+        let g = this.createGroup(this.svg_id+"-backdrop",
+                                 "PetrinetFun-structure");
+        svg.appendChild(g);
+
+        g = this.createGroup(this.svg_id+"-structure",
+                             "PetrinetFun-structure");
+        svg.appendChild(g);
+        {
+            let g2 = this.createGroup(this.svg_id+"-arcs",
+                                      "PetrinetFun-arcs");
+            g.appendChild(g2);
+
+            g2 = this.createGroup(this.svg_id+"-nodes",
+                                  "PetrinetFun-nodes");
+            g.appendChild(g2);
+        }
+
+        g = this.createGroup(this.svg_id+"-marking",
+                             "PetrinetFun-marking");
+        svg.appendChild(g);
     }
+
+
+    renderStructure() {
+        this.renderPlaces();
+        this.renderTransitions();
+        this.renderArcs();
+    }
+
+
+    protected renderPlaces() {
+
+        const svgnodes = document.getElementById(this.svg_id+"-nodes");
+        if (!svgnodes) {
+            console.error("Element '"+this.svg_id+"'-nodes not found.");
+            return;
+        }
+        this.removeChildren(svgnodes);
+
+        for (let place of this.svg_layout.places) {
+            //console.log(place);
+            let p = this.createElement("circle", {
+                "class": "PetrinetFun-place",
+                "cx"   : String(place.posX),
+                "cy"   : String(place.posY),
+                "r"    : String(place.radius)
+            });
+            svgnodes.appendChild(p);
+        }
+    }
+
+
+    protected renderTransitions() {
+
+        const svgnodes = document.getElementById(this.svg_id+"-nodes");
+        if (!svgnodes) {
+            console.error("Element '"+this.svg_id+"'-nodes not found.");
+            return;
+        }
+        // do NOT remove children of svgnodes here, places are already there
+
+        for (let transition of this.svg_layout.transitions) {
+            //console.log(transition);
+
+            let t = this.createElement("rect", {
+                "class" : "PetrinetFun-transition",
+                "x"     : String(transition.posLeft),
+                "y"     : String(transition.posTop),
+                "width" : String(transition.width),
+                "height": String(transition.height)
+            });
+            svgnodes.appendChild(t);
+        }
+    }
+
+
+    renderArcs() {
+
+        const svgarcs = document.getElementById(this.svg_id+"-arcs");
+        if (!svgarcs) {
+            console.error("Element '"+this.svg_id+"'-arcs not found.");
+            return;
+        }
+        this.removeChildren(svgarcs);
+
+        const arrowid = this.svg_id+"-arrow";
+        const arrowref = "url(#"+arrowid+")";
+
+        let m = this.createElement("marker", {
+            "class" : "PetrinetFun-arrow",
+            "id"    : arrowid,
+            "markerHeight":  "9",
+            "markerWidth" : "17",
+            //"markerUnits": "userSpaceOnUse",
+            "refX"  : "16",
+            "refY"  : "5",
+            "orient": "auto-start-reverse"
+        });
+        svgarcs.appendChild(m);
+
+        let arrow = this.createElement("polygon", {
+            "points": "14 5, 2 8, 2 2"
+        });
+        m.appendChild(arrow);
+
+        for (let arc of this.svg_layout.arcs) {
+            //console.log(arc);
+
+            let a = this.createElement("polyline", {
+                "class" : "PetrinetFun-arc",
+                "points": arc.coordinates.join(" ")
+            });
+            if (arc.arrowT) {
+                a.setAttributeNS(null, "marker-start", arrowref);
+            }
+            if (arc.arrowP) {
+                a.setAttributeNS(null, "marker-end", arrowref);
+            }
+            svgarcs.appendChild(a);
+        }
+    }
+
+
+
+    removeChildren(e: Element) {
+        while (e.lastChild) {
+            e.removeChild(e.lastChild);
+        }
+    }
+
+    createElement(name: string, attribs: object): SVGElement {
+
+        let e = document.createElementNS("http://www.w3.org/2000/svg", name);
+        for (let key in attribs) {
+            e.setAttributeNS(null, key, String(attribs[key]));
+        }
+        return e;
+    }
+
+    createGroup(id: string, classname: string): SVGElement {
+        return this.createElement("g", { "id": id, "class": classname });
+    }
+
 }
