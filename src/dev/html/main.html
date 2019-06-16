@@ -41,18 +41,34 @@ svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-arc {
 }
 </style>
 
-<script src="../../../target/js/main.js"></script>
+<!-- download require.js from:
+     https://requirejs.org/docs/release/2.3.6/minified/require.js
+-->
+<script data-main="../../../target/js/main" src="./require.js"></script>
+<script src="../../../target/js/main.js" /></script>
+
 
 <script>
 function init() {
-  exampleClientServer("pnf1");
-  exampleDeadlock("pnf2");
-  exampleIntroductory("pnf3");
+  requirejs(["grid", "main"], function(grid, main) {
+    console.log(grid, main);
+
+    gls = new grid.LayoutStructure();
+    exampleClientServer(gls);
+    main.renderStructureSVG("pnf1", gls);
+
+    gls = new grid.LayoutStructure();
+    exampleDeadlock(gls);
+    main.renderStructureSVG("pnf2", gls);
+
+    gls = new grid.LayoutStructure();
+    exampleIntroductory(gls);
+    main.renderStructureSVG("pnf3", gls);
+  })
 }
 
 
-function exampleClientServer(svgid) {
-  var structure = new GridLayoutStructure();
+function exampleClientServer(structure) {
 
   p0 = structure.addPlace(2, 0);
   p1 = structure.addPlace(2, 4);
@@ -95,13 +111,10 @@ function exampleClientServer(svgid) {
   structure.addArc(t5, p3, "o", [
     { gridX: 12, gridY: 0 }
   ]);
-
-  renderStructureSVG(svgid, structure);
 }
 
 
-function exampleDeadlock(svgid) {
-  var structure = new GridLayoutStructure();
+function exampleDeadlock(structure) {
 
   p0 = structure.addPlace(0, 0);
   p1 = structure.addPlace(2, 2);
@@ -148,12 +161,10 @@ function exampleDeadlock(svgid) {
   ]);
   structure.addArc(t5, p7, "o");
   structure.addArc(t5, p3, "o");
-
-  renderStructureSVG(svgid, structure);
 }
 
-function exampleIntroductory(svgid) {
-  var structure = new GridLayoutStructure();
+
+function exampleIntroductory(structure) {
 
   p0 = structure.addPlace(5, 0);
   p1 = structure.addPlace(0, 3);
@@ -194,8 +205,6 @@ function exampleIntroductory(svgid) {
   structure.addArc(t3, p4, "o", [
     { gridX: 10, gridY: 6 }
   ]);
-
-  renderStructureSVG(svgid, structure);
 }
 
 </script>
