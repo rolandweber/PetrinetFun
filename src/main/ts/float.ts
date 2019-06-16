@@ -19,10 +19,10 @@ export interface Place {
 }
 
 export interface Transition {
-    posLeft: number;
-    posTop: number;
-    width: number;
-    height: number;
+    posX: number;
+    posY: number;
+    deltaX: number;
+    deltaY: number;
 }
 
 export interface Arc {
@@ -70,38 +70,36 @@ export class LayoutStructure {
 
     protected positionTransitions(gtransitions: Array<grid.Transition>) {
         this.transitions = gtransitions.map(function(gt) : Transition {
-            let width, height;
+            let dx, dy; // half of width, half of height
             switch (gt.style) {
                 case grid.TransitionStyle.Horizontal: {
-                    width  = 1.0 * this.step;
-                    height = 0.3 * this.step;
+                    dx = 0.45 * this.step;
+                    dy = 0.15 * this.step;
                     break;
                 }
                 case grid.TransitionStyle.Vertical: {
-                    width  = 0.3 * this.step;
-                    height = 1.0 * this.step;
+                    dx = 0.15 * this.step;
+                    dy = 0.45 * this.step;
                     break;
                 }
                 case grid.TransitionStyle.Square: {
-                    width  = 0.6 * this.step;
-                    height = 0.6 * this.step;
+                    dx = 0.3 * this.step;
+                    dy = 0.3 * this.step;
                     break;
                 }
                 default: {
                     // something visible but ugly
-                    width  = 0.2 * this.step;
-                    height = 0.2 * this.step;
+                    dx = 0.1 * this.step;
+                    dy = 0.1 * this.step;
                     break;
                 }
             }
-            const centerX = this.x2svg(gt.gridX);
-            const centerY = this.y2svg(gt.gridY);
 
             return {
-                posLeft: centerX - width/2,
-                posTop:  centerY - height/2,
-                width:   width,
-                height:  height
+                posX:   this.x2svg(gt.gridX),
+                posY:   this.y2svg(gt.gridY),
+                deltaX: dx,
+                deltaY: dy
             }
         }, this)
     }

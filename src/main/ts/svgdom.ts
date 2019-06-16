@@ -105,10 +105,10 @@ export class SVGRenderer {
 
             let t = this.createElement("rect", {
                 "class" : "PetrinetFun-transition",
-                "x"     : String(transition.posLeft),
-                "y"     : String(transition.posTop),
-                "width" : String(transition.width),
-                "height": String(transition.height)
+                "x"     : String(transition.posX-transition.deltaX),
+                "y"     : String(transition.posY-transition.deltaY),
+                "width" : String(transition.deltaX * 2),
+                "height": String(transition.deltaY * 2)
             });
             svgnodes.appendChild(t);
         }
