@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    // "outDir": "./target/js/", // cannot load ES6 modules from file: URL
+    //"outDir": "./target/js/", // cannot load ES6 modules from file: URL
+    //"module": "es6",
     "outFile": "./target/js/main.js",
-    "module": "system", // compatible with outFile
     "sourceMap": false,
     "strictNullChecks": true,
     "target": "es6"

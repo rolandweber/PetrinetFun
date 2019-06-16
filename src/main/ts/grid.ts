@@ -9,46 +9,46 @@
 // =============================================================================
 
 
-export interface Position {
+interface GridPosition {
     gridX: number;
     gridY: number;
 }
 
-export interface Place extends Position {
+interface GridPlace extends GridPosition {
 }
 
-export enum TransitionStyle {
+enum GridTransitionStyle {
     Horizontal = "h",
     Vertical = "v",
     Square = "q",
 }
 
-export interface Transition extends Position {
-    style: TransitionStyle;
+interface GridTransition extends GridPosition {
+    style: GridTransitionStyle;
 }
 
 
-export enum ArcType {
+enum GridArcType {
     Input = "i",
     Output = "o",
     // Read = "r", Inhibit = "h",... 
 }
 
-export interface Arc {
-    transition: Transition;
-    place: Place;
-    arctype: ArcType;
-    stopover: Array<Position>;
+interface GridArc {
+    transition: GridTransition;
+    place: GridPlace;
+    arctype: GridArcType;
+    stopover: Array<GridPosition>;
 }
 
 
-export class LayoutStructure {
-    places: Array<Place> = [];
-    transitions: Array<Transition> = [];
-    arcs: Array<Arc> = [];
+class GridLayoutStructure {
+    places: Array<GridPlace> = [];
+    transitions: Array<GridTransition> = [];
+    arcs: Array<GridArc> = [];
 
 
-    addPlace(x: number, y: number): Place {
+    addPlace(x: number, y: number): GridPlace {
         let place = {
             gridX: x, gridY: y
         }
@@ -58,8 +58,8 @@ export class LayoutStructure {
 
 
     addTransition(x: number, y: number,
-                  style: TransitionStyle = TransitionStyle.Square)
-    : Transition {
+                  style: GridTransitionStyle = GridTransitionStyle.Square)
+    : GridTransition {
 
         let transition = {
             gridX: x, gridY: y, style: style
@@ -69,10 +69,10 @@ export class LayoutStructure {
     }
 
 
-    addArc(transition: Transition,
-           place: Place,
-           arctype: ArcType,
-           stopover: Array<Position> = []) : Arc
+    addArc(transition: GridTransition,
+           place: GridPlace,
+           arctype: GridArcType,
+           stopover: Array<GridPosition> = []) : GridArc
     {
         let arc = {
             transition: transition,

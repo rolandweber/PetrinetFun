@@ -4,7 +4,8 @@
  * https://creativecommons.org/publicdomain/zero/1.0/
  */
 
-import * as float from "./float"
+/// <reference path="float.ts" />
+
 
 // =============================================================================
 // SVG rendering: DOM nodes
@@ -13,11 +14,11 @@ import * as float from "./float"
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 
-export class SVGRenderer {
-    float_layout: float.LayoutStructure;
+class SVGRenderer {
+    float_layout: FloatLayoutStructure;
     svg_id: string;
 
-    constructor(layout: float.LayoutStructure, svgid: string) {
+    constructor(layout: FloatLayoutStructure, svgid: string) {
         this.float_layout = layout;
         this.svg_id = svgid;
 

@@ -4,13 +4,12 @@
  * https://creativecommons.org/publicdomain/zero/1.0/
  */
 
-import { LayoutStructure as GridLayoutStructure } from "./grid"
-import { LayoutStructure as FloatLayoutStructure } from "./float"
-import { SVGRenderer } from "./svgdom"
+/// <reference path="grid.ts" />
+/// <reference path="float.ts" />
+/// <reference path="svgdom.ts" />
 
-
-export function renderStructureSVG(svgid: string,
-                                   structure: GridLayoutStructure)
+function renderStructureSVG(svgid: string,
+                            structure: GridLayoutStructure)
 {
     const layout = new FloatLayoutStructure(structure);
     const renderer = new SVGRenderer(layout, svgid);
