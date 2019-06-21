@@ -142,6 +142,7 @@ export class LayoutStructure {
             arc.coordinates.push(p.posX, p.posY);
 
             this.adjustArcAtTransition(arc, t);
+            this.adjustArcAtPlace(arc, p);
 
             return arc;
         }, this)
@@ -182,5 +183,30 @@ export class LayoutStructure {
 
         arc.coordinates[0] = posX;
         arc.coordinates[1] = posY;
+    }
+
+
+    // adjust the end point of an arc at a place
+    // This does not take into account other arcs of that place.
+    protected adjustArcAtPlace(arc: Arc, p: Place) : void {
+        // all arcs end at the place, consider the next point
+        const len = arc.coordinates.length;
+        let posX  = arc.coordinates[len-2];
+        let posY  = arc.coordinates[len-1];
+        let nextX = arc.coordinates[len-4];
+        let nextY = arc.coordinates[len-3];
+
+        let dX = nextX - posX;
+        let dY = nextY - posY;
+
+        // compute length of arc segment, scale dX,dY to radius of place
+        let seglength = Math.sqrt(dX*dX + dY*dY);
+        let scale = p.radius / seglength;
+
+        posX = p.posX + scale*dX;
+        posY = p.posY + scale*dY;
+
+        arc.coordinates[len-2] = posX;
+        arc.coordinates[len-1] = posY;
     }
 }
