@@ -78,7 +78,7 @@ export class SVGRenderer {
         }
         this.removeChildren(svgnodes);
 
-        for (let place of this.float_layout.places) {
+        for (let place of this.float_layout.places.values()) {
             //console.log(place);
             let p = this.createElement("circle", {
                 "class": "PetrinetFun-place",
@@ -100,7 +100,7 @@ export class SVGRenderer {
         }
         // do NOT remove children of svgnodes here, places are already there
 
-        for (let transition of this.float_layout.transitions) {
+        for (let transition of this.float_layout.transitions.values()) {
             //console.log(transition);
 
             let t = this.createElement("rect", {

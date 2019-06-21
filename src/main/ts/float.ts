@@ -37,8 +37,8 @@ export interface Arc {
 export class LayoutStructure {
     protected readonly step = 60;
 
-    places: Array<Place>;
-    transitions: Array<Transition>;
+    places: Map<string, Place> = new Map();
+    transitions: Map<string, Transition> = new Map();
     arcs: Array<Arc>;
 
     constructor(structure: grid.LayoutStructure) {
@@ -57,20 +57,20 @@ export class LayoutStructure {
     }
 
 
-    protected positionPlaces(gplaces: Array<grid.Place>) {
-        this.places = gplaces.map(function(gp) : Place {
-            return {
+    protected positionPlaces(gplaces: Map<string, grid.Place>) {
+        gplaces.forEach(function(gp, id) {
+            this.places.set(id, {
                 posX: this.x2svg(gp.gridX),
                 posY: this.y2svg(gp.gridY),
                 radius: 0.4 * this.step
-            }
-        }, this)
+            })
+        }, this);
     }
 
 
-    protected positionTransitions(gtransitions: Array<grid.Transition>) {
-        this.transitions = gtransitions.map(function(gt) : Transition {
-            let dx, dy; // half of width, half of height
+    protected positionTransitions(gtransitions: Map<string, grid.Transition>) {
+        gtransitions.forEach(function(gt, id) {
+            let dx: number, dy: number; // half of width, half of height
             switch (gt.style) {
                 case grid.TransitionStyle.Horizontal: {
                     dx = 0.45 * this.step;
@@ -95,12 +95,12 @@ export class LayoutStructure {
                 }
             }
 
-            return {
+            this.transitions.set(id, {
                 posX:   this.x2svg(gt.gridX),
                 posY:   this.y2svg(gt.gridY),
                 deltaX: dx,
                 deltaY: dy
-            }
+            });
         }, this)
     }
 

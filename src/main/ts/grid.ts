@@ -15,6 +15,7 @@ export interface Position {
 }
 
 export interface Place extends Position {
+    id: string;
 }
 
 export enum TransitionStyle {
@@ -24,6 +25,7 @@ export enum TransitionStyle {
 }
 
 export interface Transition extends Position {
+    id: string;
     style: TransitionStyle;
 }
 
@@ -43,28 +45,48 @@ export interface Arc {
 
 
 export class LayoutStructure {
-    places: Array<Place> = [];
-    transitions: Array<Transition> = [];
+    places: Map<string, Place> = new Map();
+    transitions: Map<string, Transition> = new Map();
     arcs: Array<Arc> = [];
 
 
-    addPlace(x: number, y: number): Place {
+    protected determineID(id: string | undefined, fallback: string): string {
+        if (id) {
+            if (this.places.has(id) || this.transitions.has(id)) {
+                throw new Error("ID '"+id+"' already in use.");
+            }
+            return id;
+        }
+
+        // generate a unique ID from the fallback
+        let result = fallback;
+        while (this.places.has(result) || this.transitions.has(result)) {
+            result += "_" + Math.floor(Math.random()*1000);
+        }
+        return result;
+    }
+
+
+    addPlace(x: number, y: number, id?: string): Place {
         let place = {
+            id: this.determineID(id, 'P'+this.places.size),
             gridX: x, gridY: y
         }
-        this.places.push(place);
+        this.places.set(place.id, place);
         return place;
     }
 
 
     addTransition(x: number, y: number,
-                  style: TransitionStyle = TransitionStyle.Square)
+                  style: TransitionStyle = TransitionStyle.Square,
+                  id?: string)
     : Transition {
 
         let transition = {
+            id: this.determineID(id, 'T'+this.transitions.size),
             gridX: x, gridY: y, style: style
         }
-        this.transitions.push(transition);
+        this.transitions.set(transition.id, transition);
         return transition;
     }
 
