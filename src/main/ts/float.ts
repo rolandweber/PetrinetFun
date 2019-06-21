@@ -74,7 +74,7 @@ export class LayoutStructure {
     }
 
 
-    protected positionPlaces(gplaces: Map<string, grid.Place>) {
+    protected positionPlaces(gplaces: Map<string, grid.Place>) : void {
         gplaces.forEach(function(gp, id) {
             this.places.set(id, {
                 posX: this.x2pos(gp.gridX),
@@ -85,7 +85,8 @@ export class LayoutStructure {
     }
 
 
-    protected positionTransitions(gtransitions: Map<string, grid.Transition>) {
+    protected positionTransitions(gtransitions: Map<string, grid.Transition>
+                                 ) : void {
         gtransitions.forEach(function(gt, id) {
             let dx: number, dy: number; // half of width, half of height
             switch (gt.style) {
@@ -122,7 +123,7 @@ export class LayoutStructure {
     }
 
 
-    protected positionArcs(garcs: Array<grid.Arc>) {
+    protected positionArcs(garcs: Array<grid.Arc>) : void {
         this.arcs = garcs.map(function(ga) : Arc {
             const t = this.getTransition(ga.transition.id);
             const p = this.getPlace(ga.place.id);
@@ -140,8 +141,46 @@ export class LayoutStructure {
 
             arc.coordinates.push(p.posX, p.posY);
 
+            this.adjustArcAtTransition(arc, t);
+
             return arc;
         }, this)
     }
 
+
+    // adjust the end point of an arc at a transition
+    // This does not take into account other arcs of that transition.
+    protected adjustArcAtTransition(arc: Arc, t: Transition) : void {
+        // all arcs start at the transition, consider the next point
+        let posX  = arc.coordinates[0];
+        let posY  = arc.coordinates[1];
+        let nextX = arc.coordinates[2];
+        let nextY = arc.coordinates[3];
+
+        let dX = nextX - posX;
+        let dY = nextY - posY;
+
+        // Trivial approach: snap X and Y individually to the border of the
+        // transition. Horizontal and vertical lines will snap to the middle
+        // of a side, all others to a corner.
+
+        if (dX < 0) {
+            posX = t.posX - t.deltaX
+        } else if (dX > 0) {
+            posX = t.posX + t.deltaX
+        }
+        // else vertical
+
+        if (dY < 0) {
+            posY = t.posY - t.deltaY
+        } else if (dY > 0) {
+            posY = t.posY + t.deltaY
+        }
+        // else vertical
+
+        //@@@ add special handling for lines at 45° angles, unless T is square
+
+        arc.coordinates[0] = posX;
+        arc.coordinates[1] = posY;
+    }
 }
