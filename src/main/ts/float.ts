@@ -9,7 +9,6 @@ import * as grid from "./grid"
 // =============================================================================
 // floating layout: point coordinates, with SVG in mind
 // =============================================================================
-//@@@ formerly SVG layout, rename of interfaces and classes pending
 
 
 export interface Place {
@@ -26,8 +25,8 @@ export interface Transition {
 }
 
 export interface Arc {
-    // svgTransition: Transition;
-    // svgPlace: Place;
+    // transition: Transition;
+    // place: Place;
     coordinates: Array<number>; // alternating x and y
     arrowT: boolean;
     arrowP: boolean;
@@ -48,11 +47,29 @@ export class LayoutStructure {
     }
 
 
-    protected x2svg(gridX: number) : number {
+    getPlace(id: string): Place {
+        const result = this.places.get(id);
+        if (!result) {
+            throw new Error("No place with ID '"+id+"'.");
+        }
+        return result;
+    }
+
+
+    getTransition(id: string): Transition {
+        const result = this.transitions.get(id);
+        if (!result) {
+            throw new Error("No transition with ID '"+id+"'.");
+        }
+        return result;
+    }
+
+
+    protected x2pos(gridX: number) : number {
         return (gridX+0.5) * this.step;
     }
 
-    protected y2svg(gridY: number) : number {
+    protected y2pos(gridY: number) : number {
         return (gridY+0.5) * this.step;
     }
 
@@ -60,8 +77,8 @@ export class LayoutStructure {
     protected positionPlaces(gplaces: Map<string, grid.Place>) {
         gplaces.forEach(function(gp, id) {
             this.places.set(id, {
-                posX: this.x2svg(gp.gridX),
-                posY: this.y2svg(gp.gridY),
+                posX: this.x2pos(gp.gridX),
+                posY: this.y2pos(gp.gridY),
                 radius: 0.4 * this.step
             })
         }, this);
@@ -96,8 +113,8 @@ export class LayoutStructure {
             }
 
             this.transitions.set(id, {
-                posX:   this.x2svg(gt.gridX),
-                posY:   this.y2svg(gt.gridY),
+                posX:   this.x2pos(gt.gridX),
+                posY:   this.y2pos(gt.gridY),
                 deltaX: dx,
                 deltaY: dy
             });
@@ -107,25 +124,21 @@ export class LayoutStructure {
 
     protected positionArcs(garcs: Array<grid.Arc>) {
         this.arcs = garcs.map(function(ga) : Arc {
-            //@@@ start/end positions from P and T, without re-computing?
-            //@@@ would need to map Grid P/T to SVG P/T
-            const tX = this.x2svg(ga.transition.gridX);
-            const tY = this.y2svg(ga.transition.gridY);
-            const pX = this.x2svg(ga.place.gridX);
-            const pY = this.y2svg(ga.place.gridY);
+            const t = this.getTransition(ga.transition.id);
+            const p = this.getPlace(ga.place.id);
 
             let arc = {
-                coordinates: [tX, tY],
+                coordinates: [t.posX, t.posY],
                 arrowT: ga.arctype == grid.ArcType.Input,
                 arrowP: ga.arctype == grid.ArcType.Output,
             }
 
             for (let pos of ga.stopover) {
-                arc.coordinates.push(this.x2svg(pos.gridX),
-                                     this.y2svg(pos.gridY));
+                arc.coordinates.push(this.x2pos(pos.gridX),
+                                     this.y2pos(pos.gridY));
             }
 
-            arc.coordinates.push(pX, pY);
+            arc.coordinates.push(p.posX, p.posY);
 
             return arc;
         }, this)
