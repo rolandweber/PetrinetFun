@@ -15,6 +15,7 @@ export interface Place {
     posX: number;
     posY: number;
     radius: number;
+    label: string;
 }
 
 export interface Transition {
@@ -22,6 +23,7 @@ export interface Transition {
     posY: number;
     deltaX: number;
     deltaY: number;
+    label: string;
 }
 
 export interface Arc {
@@ -79,7 +81,8 @@ export class LayoutStructure {
             this.places.set(id, {
                 posX: this.x2pos(gp.gridX),
                 posY: this.y2pos(gp.gridY),
-                radius: 0.4 * this.step
+                radius: 0.4 * this.step,
+                label: id
             })
         }, this);
     }
@@ -117,7 +120,8 @@ export class LayoutStructure {
                 posX:   this.x2pos(gt.gridX),
                 posY:   this.y2pos(gt.gridY),
                 deltaX: dx,
-                deltaY: dy
+                deltaY: dy,
+                label: id
             });
         }, this)
     }

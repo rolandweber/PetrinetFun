@@ -25,7 +25,7 @@ export class SVGRenderer {
     }
 
 
-    reset() {
+    reset() : void {
         //@@@ save the created nodes in the class, to avoid the lookup later?
 
         const svg = document.getElementById(this.svg_id);
@@ -62,14 +62,14 @@ export class SVGRenderer {
     }
 
 
-    renderStructure() {
+    renderStructure() : void {
         this.renderPlaces();
         this.renderTransitions();
         this.renderArcs();
     }
 
 
-    protected renderPlaces() {
+    protected renderPlaces() : void {
 
         const svgnodes = document.getElementById(this.svg_id+"-nodes");
         if (!svgnodes) {
@@ -86,12 +86,13 @@ export class SVGRenderer {
                 "cy"   : String(place.posY),
                 "r"    : String(place.radius)
             });
+            this.addTitle(p, place.label);
             svgnodes.appendChild(p);
         }
     }
 
 
-    protected renderTransitions() {
+    protected renderTransitions() : void {
 
         const svgnodes = document.getElementById(this.svg_id+"-nodes");
         if (!svgnodes) {
@@ -110,12 +111,13 @@ export class SVGRenderer {
                 "width" : String(transition.deltaX * 2),
                 "height": String(transition.deltaY * 2)
             });
+            this.addTitle(t, transition.label);
             svgnodes.appendChild(t);
         }
     }
 
 
-    renderArcs() {
+    renderArcs() : void {
 
         const svgarcs = document.getElementById(this.svg_id+"-arcs");
         if (!svgarcs) {
@@ -163,13 +165,13 @@ export class SVGRenderer {
 
 
 
-    removeChildren(e: Element) {
+    removeChildren(e: Element) : void {
         while (e.lastChild) {
             e.removeChild(e.lastChild);
         }
     }
 
-    createElement(name: string, attribs: object): SVGElement {
+    createElement(name: string, attribs: object = {}): SVGElement {
 
         let e = document.createElementNS("http://www.w3.org/2000/svg", name);
         for (let key in attribs) {
@@ -182,4 +184,9 @@ export class SVGRenderer {
         return this.createElement("g", { "id": id, "class": classname });
     }
 
+    addTitle(e: SVGElement, text: string) : void {
+        let t = this.createElement("title");
+        t.textContent = text;
+        e.appendChild(t);
+    } 
 }
