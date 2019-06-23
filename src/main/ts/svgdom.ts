@@ -48,7 +48,7 @@ export class SVGRenderer {
         }
 
         let g = this.createGroup(this.svg_id+"-backdrop",
-                                 "PetrinetFun-structure");
+                                 "PetrinetFun-backdrop");
         svg.appendChild(g);
 
         g = this.createGroup(this.svg_id+"-structure",
@@ -67,7 +67,6 @@ export class SVGRenderer {
         g = this.createGroup(this.svg_id+"-marking",
                              "PetrinetFun-marking");
         svg.appendChild(g);
-
     }
 
 
@@ -176,6 +175,32 @@ export class SVGRenderer {
     }
 
 
+    // --------------------------------------------------------------
+
+    highlight(ids: Array<string>) {
+
+        const backdrop = document.getElementById(this.svg_id+"-backdrop");
+        if (!backdrop) {
+            console.error("Element '"+this.svg_id+"'-backdrop not found.");
+            return;
+        }
+        this.removeChildren(backdrop);
+
+        for (let id of ids) {
+            console.log(id);
+            const e = (this.places.get(id) ||
+                       this.transitions.get(id) ||
+                       this.arcs.get(id));
+            if (e) {
+                const e2 = <Element> e.cloneNode(false);
+                e2.removeAttribute("id");
+                backdrop.appendChild(e2);
+            }
+        }
+    }
+
+
+    // --------------------------------------------------------------
 
     removeChildren(e: Element) : void {
         while (e.lastChild) {
@@ -201,4 +226,18 @@ export class SVGRenderer {
         t.textContent = text;
         e.appendChild(t);
     } 
+}
+
+
+
+export function highlight(svgid: string, ids: Array<string>)
+{
+    const svg = document.getElementById(svgid);
+    if (!svg) {
+        console.error("Element '"+svgid+"' not found.");
+        return;
+    }
+
+    const renderer = <SVGRenderer>(svg as any)._petrinetfun_renderer;
+    renderer.highlight(ids);
 }

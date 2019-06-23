@@ -24,7 +24,6 @@ svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-place,
 svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-transition {
   stroke: darkblue;
   stroke-width: 2;
-/* transparency lets arcs shine through... */
   fill:   rgba(255, 255, 255, 0.8);
 }
 
@@ -38,6 +37,16 @@ svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-arc {
   stroke: black;
   stroke-width: 2;
   fill: none;
+}
+
+svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-place,
+svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-transition {
+  fill: rgb(192, 128, 255);
+  stroke: rgb(192, 128, 255);
+  stroke-width: 20;
+}
+svg.PetrinetFun .PetrinetFun-backdrop rect.PetrinetFun-transition {
+  rx: 3;
 }
 </style>
 
@@ -64,6 +73,9 @@ function init() {
     gls = new grid.LayoutStructure();
     exampleIntroductory(gls);
     main.renderStructureSVG("pnf3", gls);
+
+    window.setTimeout(main.highlight, 1700, "pnf1",
+                      ["P0","P1","P2","T3","T4","T5","dummy"]);
   })
 }
 

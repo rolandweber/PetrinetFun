@@ -7,6 +7,7 @@
 import { LayoutStructure as GridLayoutStructure } from "./grid"
 import { LayoutStructure as FloatLayoutStructure } from "./float"
 import { SVGRenderer } from "./svgdom"
+export { highlight } from "./svgdom"
 
 
 export function renderStructureSVG(svgid: string,
@@ -16,4 +17,3 @@ export function renderStructureSVG(svgid: string,
     const renderer = new SVGRenderer(layout, svgid);
     renderer.renderStructure();
 }
-
