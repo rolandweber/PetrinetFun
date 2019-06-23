@@ -29,6 +29,7 @@ export interface Transition {
 }
 
 export interface Arc {
+    id: string;
     // transition: Transition;
     // place: Place;
     coordinates: Array<number>; // alternating x and y
@@ -42,7 +43,7 @@ export class LayoutStructure {
 
     places: Map<string, Place> = new Map();
     transitions: Map<string, Transition> = new Map();
-    arcs: Array<Arc>;
+    arcs: Map<string, Arc> = new Map();
 
     constructor(structure: grid.LayoutStructure) {
         this.positionPlaces(structure.places);
@@ -131,12 +132,13 @@ export class LayoutStructure {
     }
 
 
-    protected positionArcs(garcs: Array<grid.Arc>) : void {
-        this.arcs = garcs.map(function(ga) : Arc {
+    protected positionArcs(garcs: Map<string, grid.Arc>) : void {
+        garcs.forEach(function(ga, id) {
             const t = this.getTransition(ga.transition.id);
             const p = this.getPlace(ga.place.id);
 
             let arc = {
+                id: id,
                 coordinates: [t.posX, t.posY],
                 arrowT: ga.arctype == grid.ArcType.Input,
                 arrowP: ga.arctype == grid.ArcType.Output,
@@ -152,7 +154,7 @@ export class LayoutStructure {
             this.adjustArcAtTransition(arc, t);
             this.adjustArcAtPlace(arc, p);
 
-            return arc;
+            this.arcs.set(id, arc);
         }, this)
     }
 

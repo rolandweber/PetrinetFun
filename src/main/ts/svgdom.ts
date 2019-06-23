@@ -156,7 +156,7 @@ export class SVGRenderer {
         });
         m.appendChild(arrow);
 
-        for (let arc of this.float_layout.arcs) {
+        for (let arc of this.float_layout.arcs.values()) {
             //console.log(arc);
 
             let a = this.createElement("polyline", {
@@ -170,7 +170,7 @@ export class SVGRenderer {
                 a.setAttributeNS(null, "marker-end", arrowref);
             }
             svgarcs.appendChild(a);
-            // this.arcs.set(arc.id, a);  @@@ no arc id yet
+            this.arcs.set(arc.id, a);
         }
     }
 

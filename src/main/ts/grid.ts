@@ -37,6 +37,7 @@ export enum ArcType {
 }
 
 export interface Arc {
+    id: string;
     transition: Transition;
     place: Place;
     arctype: ArcType;
@@ -47,11 +48,14 @@ export interface Arc {
 export class LayoutStructure {
     places: Map<string, Place> = new Map();
     transitions: Map<string, Transition> = new Map();
-    arcs: Array<Arc> = [];
+    arcs: Map<string, Arc> = new Map();
 
 
     protected determineID(id: string | undefined, fallback: string): string {
         if (id) {
+            if (id.indexOf('$') >= 0) {
+                throw new Error("Reserved character '$' in ID '"+id+"'.");
+            }
             if (this.places.has(id) || this.transitions.has(id)) {
                 throw new Error("ID '"+id+"' already in use.");
             }
@@ -64,6 +68,12 @@ export class LayoutStructure {
             result += "_" + Math.floor(Math.random()*1000);
         }
         return result;
+    }
+
+    protected composeArcID(transition: Transition,
+                           place: Place,
+                           arctype: ArcType) : string {
+        return transition.id + "$" + arctype + "$" + place.id;
     }
 
 
@@ -97,12 +107,13 @@ export class LayoutStructure {
            stopover: Array<Position> = []) : Arc
     {
         let arc = {
+            id: this.composeArcID(transition, place, arctype),
             transition: transition,
             place: place,
             arctype: arctype,
             stopover: stopover
         }
-        this.arcs.push(arc);
+        this.arcs.set(arc.id, arc);
         return arc;
     }
 
