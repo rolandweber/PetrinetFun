@@ -17,6 +17,11 @@ export class SVGRenderer {
     float_layout: float.LayoutStructure;
     svg_id: string;
 
+    places: Map<string, SVGElement> = new Map();
+    transitions: Map<string, SVGElement> = new Map();
+    arcs: Map<string, SVGElement> = new Map();
+
+
     constructor(layout: float.LayoutStructure, svgid: string) {
         this.float_layout = layout;
         this.svg_id = svgid;
@@ -26,14 +31,17 @@ export class SVGRenderer {
 
 
     reset() : void {
-        //@@@ save the created nodes in the class, to avoid the lookup later?
-
         const svg = document.getElementById(this.svg_id);
         if (!svg) {
             console.error("Element '"+this.svg_id+"' not found.");
             return;
         }
         this.removeChildren(svg);
+
+        (svg as any)._petrinetfun_renderer = this;
+        this.places.clear();
+        this.transitions.clear();
+        this.arcs.clear();
 
         if (!svg.classList.contains("PetrinetFun")) {
             svg.classList.add("PetrinetFun");
@@ -59,6 +67,7 @@ export class SVGRenderer {
         g = this.createGroup(this.svg_id+"-marking",
                              "PetrinetFun-marking");
         svg.appendChild(g);
+
     }
 
 
@@ -88,6 +97,7 @@ export class SVGRenderer {
             });
             this.addTitle(p, place.label);
             svgnodes.appendChild(p);
+            this.places.set(place.id, p);
         }
     }
 
@@ -113,6 +123,7 @@ export class SVGRenderer {
             });
             this.addTitle(t, transition.label);
             svgnodes.appendChild(t);
+            this.transitions.set(transition.id, t);
         }
     }
 
@@ -160,6 +171,7 @@ export class SVGRenderer {
                 a.setAttributeNS(null, "marker-end", arrowref);
             }
             svgarcs.appendChild(a);
+            // this.arcs.set(arc.id, a);  @@@ no arc id yet
         }
     }
 

@@ -12,6 +12,7 @@ import * as grid from "./grid"
 
 
 export interface Place {
+    id: string;
     posX: number;
     posY: number;
     radius: number;
@@ -19,6 +20,7 @@ export interface Place {
 }
 
 export interface Transition {
+    id: string;
     posX: number;
     posY: number;
     deltaX: number;
@@ -79,10 +81,11 @@ export class LayoutStructure {
     protected positionPlaces(gplaces: Map<string, grid.Place>) : void {
         gplaces.forEach(function(gp, id) {
             this.places.set(id, {
-                posX: this.x2pos(gp.gridX),
-                posY: this.y2pos(gp.gridY),
+                id:     id,
+                posX:   this.x2pos(gp.gridX),
+                posY:   this.y2pos(gp.gridY),
                 radius: 0.4 * this.step,
-                label: id
+                label:  id
             })
         }, this);
     }
@@ -117,11 +120,12 @@ export class LayoutStructure {
             }
 
             this.transitions.set(id, {
+                id:     id,
                 posX:   this.x2pos(gt.gridX),
                 posY:   this.y2pos(gt.gridY),
                 deltaX: dx,
                 deltaY: dy,
-                label: id
+                label:  id
             });
         }, this)
     }
