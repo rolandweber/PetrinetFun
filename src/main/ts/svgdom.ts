@@ -194,7 +194,13 @@ export class SVGRenderer {
             if (e) {
                 const e2 = <Element> e.cloneNode(false);
                 e2.removeAttribute("id");
-                backdrop.appendChild(e2);
+                e2.removeAttribute("marker-start");
+                e2.removeAttribute("marker-end");
+                if (e.classList.contains("PetrinetFun-arc")) {
+                    backdrop.insertBefore(e2, backdrop.firstChild);
+                } else {
+                    backdrop.appendChild(e2);
+                }
             }
         }
     }

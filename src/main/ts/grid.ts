@@ -117,4 +117,51 @@ export class LayoutStructure {
         return arc;
     }
 
+
+    //@@@ arc expansion implementation is inefficient for large structures
+
+    getArcIDsForTransition(t: Transition,
+                           result?: Set<string>) : Set<string> {
+        if (result == null) {
+            result = new Set<string>();
+        }
+        for (let arc of this.arcs.values()) {
+            if (arc.transition == t) {
+                result.add(arc.id);
+            }
+        }
+        console.log(t.id, " -> ", result);
+        return result;
+    }
+
+    getArcIDsForPlace(p: Place,
+                      result?: Set<string>) : Set<string> {
+        if (result == null) {
+            result = new Set<string>();
+        }
+        for (let arc of this.arcs.values()) {
+            if (arc.place == p) {
+                result.add(arc.id);
+            }
+        }
+        console.log(p.id, " -> ", result);
+        return result;
+    }
+
+    getTouchingArcIDs(nodeIDs: Array<string>) : Set<string> {
+        let result = new Set<string>();
+        for (let id of nodeIDs) {
+            let t = this.transitions.get(id);
+            if (t) {
+                this.getArcIDsForTransition(t, result);
+            } else {
+                let p = this.places.get(id);
+                if (p) {
+                    this.getArcIDsForPlace(p, result);
+                } 
+            }
+        }
+        console.log("all:", result);
+        return result;
+    }
 }

@@ -45,8 +45,11 @@ svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-transition {
   stroke: rgb(192, 128, 255);
   stroke-width: 20;
 }
-svg.PetrinetFun .PetrinetFun-backdrop rect.PetrinetFun-transition {
-  rx: 3;
+svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-arc {
+  fill: none;
+  stroke: rgb(224, 192, 255);
+  stroke-width: 14;
+  stroke-linecap: butt; /* others look bad when touching unmarked nodes */
 }
 </style>
 
@@ -62,9 +65,13 @@ function init() {
   requirejs(["grid", "main"], function(grid, main) {
     console.log(grid, main);
 
-    gls = new grid.LayoutStructure();
+    var gls = new grid.LayoutStructure();
     exampleClientServer(gls);
     main.renderStructureSVG("pnf1", gls);
+
+    var area = ["P0","P1","P2","T3","T4","T5","dummy"];
+    var hull = area.concat(Array.from(gls.getTouchingArcIDs(area).values()));
+    console.log(hull);
 
     gls = new grid.LayoutStructure();
     exampleDeadlock(gls);
@@ -74,8 +81,7 @@ function init() {
     exampleIntroductory(gls);
     main.renderStructureSVG("pnf3", gls);
 
-    window.setTimeout(main.highlight, 1700, "pnf1",
-                      ["P0","P1","P2","T3","T4","T5","dummy"]);
+    window.setTimeout(main.highlight, 1700, "pnf1", hull);
   })
 }
 
