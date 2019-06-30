@@ -177,6 +177,39 @@ export class SVGRenderer {
 
     // --------------------------------------------------------------
 
+    renderMarking(marking: Map<string,string|number>) : void {
+
+        const svgmarking = document.getElementById(this.svg_id+"-marking");
+        if (!svgmarking) {
+            console.error("Element '"+this.svg_id+"'-marking not found.");
+            return;
+        }
+        this.removeChildren(svgmarking);
+
+        for (let [plid, mark] of marking) {
+            const styleclass = (typeof mark === 'number') ?
+                "PetrinetFun-numeric" : "PetrinetFun-symbolic";
+            //console.log("place", plid, "with", mark, "as", styleclass);
+
+            //@@@ the positions of places are actually tracked in the layout
+            //@@@ taking them from the rendering feels hacky
+            const place = this.places.get(plid);
+            if (!place) {
+                console.warn("Place '"+plid+"' not found.");
+                continue;
+            }
+            let m = this.createElement("text", {
+                "class" : styleclass,
+                "x" : place.getAttribute("cx"),
+                "y" : place.getAttribute("cy"),
+                "dy": (typeof mark === 'number') ? "2" : "0"
+            });
+            m.textContent = String(mark);
+            svgmarking.appendChild(m);
+        }
+    }
+
+
     highlight(ids: Array<string>) {
 
         const backdrop = document.getElementById(this.svg_id+"-backdrop");
@@ -187,7 +220,7 @@ export class SVGRenderer {
         this.removeChildren(backdrop);
 
         for (let id of ids) {
-            console.log(id);
+            //console.log(id);
             const e = (this.places.get(id) ||
                        this.transitions.get(id) ||
                        this.arcs.get(id));
@@ -201,6 +234,8 @@ export class SVGRenderer {
                 } else {
                     backdrop.appendChild(e2);
                 }
+            } else {
+                console.warn("Place, transition or arc '"+id+"' not found.");
             }
         }
     }
@@ -234,6 +269,19 @@ export class SVGRenderer {
     } 
 }
 
+
+
+export function marking(svgid: string, marking: Map<string,string|number>)
+{
+    const svg = document.getElementById(svgid);
+    if (!svg) {
+        console.error("Element '"+svgid+"' not found.");
+        return;
+    }
+
+    const renderer = <SVGRenderer>(svg as any)._petrinetfun_renderer;
+    renderer.renderMarking(marking);
+}
 
 
 export function highlight(svgid: string, ids: Array<string>)

@@ -39,6 +39,25 @@ svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-arc {
   fill: none;
 }
 
+svg.PetrinetFun .PetrinetFun-marking text {
+  dominant-baseline: middle;
+  text-anchor: middle;
+  font-family: sans-serif;
+  fill: green; /* text color */
+  font-size: 30px; /* px maps to SVG user unit here */
+}
+/* font-size 30 fits a single letter "m", or two letters "nj" into a place,
+   but not "mm". Position good for "m" and "nj", still decent for "p" and "l".
+   Numbers fit with two digits.
+ */
+
+/* Numbers would look better a bit lower. But "dy" is not recognized by
+   either Firefox or Chrome as a CSS property. Hacked into the code instead.
+svg.PetrinetFun .PetrinetFun-marking text.PetrinetFun-numeric {
+   dy: 2px;
+} */
+
+
 svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-place,
 svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-transition {
   fill: rgb(192, 128, 255);
@@ -68,6 +87,18 @@ function init() {
     var gls = new grid.LayoutStructure();
     exampleClientServer(gls);
     main.renderStructureSVG("pnf1", gls);
+
+    marking = new Map();
+    marking.set("P0", "n");
+    marking.set("P1", "p");
+    marking.set("P2", "l");
+    marking.set("P3", 8);
+    marking.set("P4", 17);
+    marking.set("P5", 57);
+    marking.set("P6", "nj");
+    marking.set("P7", "l1");
+    marking.set("nowhere", 80);
+    main.marking("pnf1", marking);
 
     var area = ["P0","P1","P2","T3","T4","T5","dummy"];
     var hull = area.concat(Array.from(gls.getTouchingArcIDs(area).values()));
