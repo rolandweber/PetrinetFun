@@ -57,6 +57,20 @@ svg.PetrinetFun .PetrinetFun-marking text.PetrinetFun-numeric {
    dy: 2px;
 } */
 
+svg.PetrinetFun .PetrinetFun-marking g.PetrinetFun-dots circle {
+  stroke: rgba(255, 255, 255, 1.0);
+  stroke-width: 0;
+  fill:   green;
+}
+
+svg.PetrinetFun .PetrinetFun-marking g.PetrinetFun-dots6 circle,
+svg.PetrinetFun .PetrinetFun-marking g.PetrinetFun-dots7 circle,
+svg.PetrinetFun .PetrinetFun-marking g.PetrinetFun-dots8 circle,
+svg.PetrinetFun .PetrinetFun-marking g.PetrinetFun-dots9 circle {
+  stroke-width: 1.4;
+}
+
+
 
 svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-place,
 svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-transition {
@@ -84,6 +98,14 @@ function init() {
   requirejs(["grid", "main"], function(grid, main) {
     console.log(grid, main);
 
+/*
+    var gls = new grid.LayoutStructure();
+    marking = exampleMarkings(gls);
+    main.renderStructureSVG("pnf1", gls);
+    if (marking)
+      main.marking("pnf1", marking);
+*/
+
     var gls = new grid.LayoutStructure();
     exampleClientServer(gls);
     main.renderStructureSVG("pnf1", gls);
@@ -103,6 +125,7 @@ function init() {
     var area = ["P0","P1","P2","T3","T4","T5","dummy"];
     var hull = area.concat(Array.from(gls.getTouchingArcIDs(area).values()));
     console.log(hull);
+    window.setTimeout(main.highlight, 1700, "pnf1", hull);
 
     gls = new grid.LayoutStructure();
     exampleDeadlock(gls);
@@ -111,9 +134,41 @@ function init() {
     gls = new grid.LayoutStructure();
     exampleIntroductory(gls);
     main.renderStructureSVG("pnf3", gls);
-
-    window.setTimeout(main.highlight, 1700, "pnf1", hull);
   })
+}
+
+function exampleMarkings(structure) {
+
+  p0 = structure.addPlace(2, 1);
+  p1 = structure.addPlace(4, 1);
+  p2 = structure.addPlace(6, 1);
+  p3 = structure.addPlace(8, 1);
+
+  p4 = structure.addPlace(2, 3);
+  p5 = structure.addPlace(4, 3);
+  p6 = structure.addPlace(6, 3);
+  p7 = structure.addPlace(8, 3);
+
+  p8 = structure.addPlace(2, 5);
+  p9 = structure.addPlace(4, 5);
+  p10 = structure.addPlace(6, 5);
+  p11 = structure.addPlace(8, 5);
+
+  marking = new Map();
+  marking.set("P0", 0);
+  marking.set("P1", 1);
+  marking.set("P2", 2);
+  marking.set("P3", 3);
+  marking.set("P4", 4);
+  marking.set("P5", 5);
+  marking.set("P6", 6);
+  marking.set("P7", 7);
+  marking.set("P8", 8);
+  marking.set("P9", 9);
+  marking.set("P10", 10);
+  marking.set("P11", 11);
+
+  return marking;
 }
 
 

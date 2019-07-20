@@ -187,10 +187,6 @@ export class SVGRenderer {
         this.removeChildren(svgmarking);
 
         for (let [plid, mark] of marking) {
-            const styleclass = (typeof mark === 'number') ?
-                "PetrinetFun-numeric" : "PetrinetFun-symbolic";
-            //console.log("place", plid, "with", mark, "as", styleclass);
-
             //@@@ the positions of places are actually tracked in the layout
             //@@@ taking them from the rendering feels hacky
             const place = this.places.get(plid);
@@ -198,15 +194,133 @@ export class SVGRenderer {
                 console.warn("Place '"+plid+"' not found.");
                 continue;
             }
+            let styleclass = "PetrinetFun-symbolic";
+            let dy = 0;
+
+            if (typeof mark === 'number') {
+                if (this.renderTokenDots(svgmarking, place, mark))
+                    continue;
+                styleclass = "PetrinetFun-numeric";
+                dy = 2;
+            }
+            //console.log("place", plid, "with", mark, "as", styleclass);
+
             let m = this.createElement("text", {
                 "class" : styleclass,
                 "x" : place.getAttribute("cx"),
                 "y" : place.getAttribute("cy"),
                 "dy": (typeof mark === 'number') ? "2" : "0"
+                // "dy" refused as CSS property by FF 68.0
             });
             m.textContent = String(mark);
             svgmarking.appendChild(m);
         }
+    }
+
+
+    renderTokenDots(svgmarking: HTMLElement,
+                    place: SVGElement, mark: number) : boolean {
+        if (mark < 1)
+            return true; // render nothing for 0
+
+        let dots: Array<[number, number]> = [];
+        let radius = 6;
+        let stretch = 8;
+
+        // the order of dots is relevant if they overlap
+        switch (mark) {
+            case 1:
+                dots = [[0, 0]];
+                break;
+
+            case 2:
+                dots = [[-stretch, -stretch],
+                        [+stretch, +stretch]];
+                break;
+
+            case 3:
+                dots = [[0, -1.25*stretch],
+                        [-stretch, 0.75*stretch],
+                        [+stretch, 0.75*stretch]];
+                break;
+
+            case 4:
+                dots = [[-stretch, -stretch],
+                        [-stretch, +stretch],
+                        [+stretch, -stretch],
+                        [+stretch, +stretch]];
+                break;
+
+            case 5:
+                dots = [[-1.25*stretch, -1.25*stretch],
+                        [-1.25*stretch, +1.25*stretch],
+                        [+1.25*stretch, -1.25*stretch],
+                        [+1.25*stretch, +1.25*stretch],
+                        [0, 0]];
+                break;
+
+            case 6:
+                dots = [[-stretch, +1.5*stretch],
+                        [+stretch, +1.5*stretch],
+                        [-stretch, 0],
+                        [+stretch, 0],
+                        [-stretch, -1.5*stretch],
+                        [+stretch, -1.5*stretch]];
+                break;
+
+            case 7:
+                dots = [[-0.75*stretch, -1.50*stretch],
+                        [-1.50*stretch, 0],
+                        [-0.75*stretch, +1.50*stretch],
+                        [+0.75*stretch, -1.50*stretch],
+                        [+1.50*stretch, 0],
+                        [+0.75*stretch, +1.50*stretch],
+                        [0, 0]];
+                break;
+
+            case 8:
+                dots = [[-1.4*stretch, +1.4*stretch],
+                        [0, +1.4*stretch],
+                        [+1.4*stretch, +1.4*stretch],
+                        [-0.7*stretch, 0],
+                        [+0.7*stretch, 0],
+                        [-1.4*stretch, -1.4*stretch],
+                        [0, -1.4*stretch],
+                        [+1.4*stretch, -1.4*stretch]];
+                break;
+
+            case 9:
+                dots = [[-1.4*stretch, +1.4*stretch],
+                        [ 0          , +1.4*stretch],
+                        [+1.4*stretch, +1.4*stretch],
+                        [-1.4*stretch, 0],
+                        [ 0          , 0],
+                        [+1.4*stretch, 0],
+                        [-1.4*stretch, -1.4*stretch],
+                        [ 0          , -1.4*stretch],
+                        [+1.4*stretch, -1.4*stretch]];
+                break;
+        }
+        if (dots.length < 1)
+            return false;
+
+        let g = this.createElement("g", {
+            "class" : "PetrinetFun-dots PetrinetFun-dots"+mark,
+            "transform" : "translate("+
+                place.getAttribute("cx")+" "+
+                place.getAttribute("cy")+")"
+        });
+        for (let [x, y] of dots) {
+            let c = this.createElement("circle", {
+                "cx" : String(x),
+                "cy" : String(y),
+                "r"  : String(radius) // refused as CSS property by FF 68.0
+            });
+            g.appendChild(c);
+        }
+        svgmarking.appendChild(g);
+
+        return true;
     }
 
 
