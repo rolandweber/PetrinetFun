@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta name="viewport" content="width=device-width">
+<title>Visual Tests - Petrinet Fun</title>
+<link href="../../main/html/PetrinetFun.css" rel="stylesheet">
+<style type="text/css">
+body {
+  background-color: #f8f8f8;
+}
+
+div.stage {
+  display: inline-block;
+  position: relative;
+  border: 1px solid #f0f0f0;
+  background-color: #ffffff;
+}
+
+div.center {
+  text-align: center;
+}
+</style>
+
+<!-- download require.js from:
+     https://requirejs.org/docs/release/2.3.6/minified/require.js
+-->
+<script data-main="../../../target/js/main" src="./require.js"></script>
+<script src="../../../target/js/main.js" /></script>
+
+
+<script>
+function render(/*function*/ example) {
+  requirejs(["grid", "main"], function(grid, main) {
+
+    var gls = new grid.LayoutStructure();
+    marking = example(gls);
+    main.renderStructureSVG("pnf-main", gls);
+    if (marking)
+      main.marking("pnf-main", marking);
+  })
+}
+
+function exampleMarkings(structure) {
+
+  structure.addPlace(1, 0);
+  structure.addPlace(3, 0);
+  structure.addPlace(5, 0);
+  structure.addPlace(7, 0);
+  structure.addPlace(9, 0);
+  structure.addPlace(11, 0);
+
+  structure.addPlace(1, 2);
+  structure.addPlace(3, 2);
+  structure.addPlace(5, 2);
+  structure.addPlace(7, 2);
+  structure.addPlace(9, 2);
+  structure.addPlace(11, 2);
+
+  structure.addPlace(1, 4);
+  structure.addPlace(3, 4);
+  structure.addPlace(5, 4);
+  structure.addPlace(7, 4);
+  structure.addPlace(9, 4);
+  structure.addPlace(11, 4);
+
+  structure.addPlace(1, 6);
+  structure.addPlace(3, 6);
+  structure.addPlace(5, 6);
+  structure.addPlace(7, 6);
+  structure.addPlace(9, 6);
+  structure.addPlace(11, 6);
+
+  structure.addPlace(1, 8);
+  structure.addPlace(3, 8);
+  structure.addPlace(5, 8);
+  structure.addPlace(7, 8);
+  structure.addPlace(9, 8);
+  structure.addPlace(11, 8);
+
+  // "P0"..."P29"
+
+  marking = new Map();
+  marking.set("P0", 0);
+  marking.set("P1", 1);
+  marking.set("P2", 2);
+  marking.set("P3", 3);
+  marking.set("P4", 4);
+  marking.set("P5", 5);
+
+  marking.set("P6", 6);
+  marking.set("P7", 7);
+  marking.set("P8", 8);
+  marking.set("P9", 9);
+  marking.set("P10", 10);
+  marking.set("P11", 11);
+
+  marking.set("P12", "n");
+  marking.set("P13", "p");
+  marking.set("P14", "l");
+  marking.set("P15", "m");
+  marking.set("P16", "j");
+  marking.set("P17", "k");
+
+  marking.set("P18", ""); // empty string
+  marking.set("P19", "nj");
+  marking.set("P20", "x1");
+  marking.set("P21", "mm");
+  marking.set("P22", "iji");
+  marking.set("P23", "M");
+
+
+  // marking.set("P24", 0); // remains unset
+
+  marking.set("P28", 75);
+  marking.set("P29", 99);
+
+  return marking;
+}
+
+
+function exampleClientServer(structure) {
+
+  p0 = structure.addPlace(2, 0);
+  p1 = structure.addPlace(2, 4);
+  p2 = structure.addPlace(2, 8);
+  p3 = structure.addPlace(10, 0);
+  p4 = structure.addPlace(10, 4);
+  p5 = structure.addPlace(10, 8);
+  p6 = structure.addPlace(6, 2);
+  p7 = structure.addPlace(6, 6);
+
+  t0 = structure.addTransition(2, 2, "h");
+  t1 = structure.addTransition(2, 6, "h");
+  t2 = structure.addTransition(0, 4, "v");
+  t3 = structure.addTransition(10, 2, "h");
+  t4 = structure.addTransition(10, 6, "h");
+  t5 = structure.addTransition(12, 4, "v");
+
+  structure.addArc(t0, p0, "i");
+  structure.addArc(t0, p1, "o");
+  structure.addArc(t0, p6, "o");
+  structure.addArc(t1, p1, "i");
+  structure.addArc(t1, p7, "i");
+  structure.addArc(t1, p2, "o");
+  structure.addArc(t2, p2, "i", [
+    { gridX: 0, gridY: 8 }
+  ]);
+  structure.addArc(t2, p0, "o", [
+    { gridX: 0, gridY: 0 }
+  ]);
+
+  structure.addArc(t3, p3, "i");
+  structure.addArc(t3, p6, "i");
+  structure.addArc(t3, p4, "o");
+  structure.addArc(t4, p4, "i");
+  structure.addArc(t4, p5, "o");
+  structure.addArc(t4, p7, "o");
+  structure.addArc(t5, p5, "i", [
+    { gridX: 12, gridY: 8 }
+  ]);
+  structure.addArc(t5, p3, "o", [
+    { gridX: 12, gridY: 0 }
+  ]);
+
+  marking = new Map();
+  marking.set("P0", "n");
+  marking.set("P3", "m");
+  return marking;
+}
+
+
+function exampleDeadlock(structure) {
+
+  p0 = structure.addPlace(0, 0);
+  p1 = structure.addPlace(2, 2);
+  p2 = structure.addPlace(2, 8);
+  p3 = structure.addPlace(12, 0);
+  p4 = structure.addPlace(10, 2);
+  p5 = structure.addPlace(10, 8);
+  p6 = structure.addPlace(4, 4);
+  p7 = structure.addPlace(8, 4);
+
+  t0 = structure.addTransition(2, 0, "h");
+  t1 = structure.addTransition(2, 4, "h");
+  t2 = structure.addTransition(0, 6, "v");
+  t3 = structure.addTransition(10, 0, "h");
+  t4 = structure.addTransition(10, 4, "h");
+  t5 = structure.addTransition(12, 6, "v");
+
+  structure.addArc(t0, p0, "i");
+  structure.addArc(t0, p7, "i");
+  structure.addArc(t0, p1, "o");
+  structure.addArc(t1, p1, "i");
+  structure.addArc(t1, p6, "i");
+  structure.addArc(t1, p2, "o");
+  structure.addArc(t2, p2, "i", [
+    { gridX: 0, gridY: 8 }
+  ]);
+  structure.addArc(t2, p6, "o");
+  structure.addArc(t2, p7, "o", [
+    { gridX: 4, gridY: 6 }
+  ]);
+  structure.addArc(t2, p0, "o");
+
+  structure.addArc(t3, p3, "i");
+  structure.addArc(t3, p6, "i");
+  structure.addArc(t3, p4, "o");
+  structure.addArc(t4, p4, "i");
+  structure.addArc(t4, p7, "i");
+  structure.addArc(t4, p5, "o");
+  structure.addArc(t5, p5, "i", [
+    { gridX: 12, gridY: 8 }
+  ]);
+  structure.addArc(t5, p6, "o", [
+    { gridX: 8, gridY: 6 }
+  ]);
+  structure.addArc(t5, p7, "o");
+  structure.addArc(t5, p3, "o");
+
+  marking = new Map();
+  marking.set("P0", "n");
+  marking.set("P3", "m");
+  marking.set("P6", 1);
+  marking.set("P7", 1);
+  return marking;
+}
+
+
+function exampleIntroductory(structure) {
+
+  p0 = structure.addPlace(5, 0);
+  p1 = structure.addPlace(0, 3);
+  p2 = structure.addPlace(2, 3);
+  p3 = structure.addPlace(8, 3);
+  p4 = structure.addPlace(10, 3);
+  p5 = structure.addPlace(7, 4);
+
+  t0 = structure.addTransition(2, 0, "h");
+  t1 = structure.addTransition(2, 6, "h");
+  t2 = structure.addTransition(8, 0, "h");
+  t3 = structure.addTransition(8, 6, "h");
+
+  structure.addArc(t0, p0, "i");
+  structure.addArc(t0, p1, "i", [
+    { gridX: 0, gridY: 0 }
+  ]);
+  structure.addArc(t0, p2, "o");
+  structure.addArc(t1, p2, "i");
+  structure.addArc(t1, p0, "o", [
+    { gridX: 4, gridY: 6 }
+  ]);
+  structure.addArc(t1, p1, "o", [
+    { gridX: 0, gridY: 6 }
+  ]);
+  structure.addArc(t1, p5, "o");
+
+  structure.addArc(t2, p0, "i");
+  structure.addArc(t2, p4, "i", [
+    { gridX: 10, gridY: 0 }
+  ]);
+  structure.addArc(t2, p5, "i");
+  structure.addArc(t2, p3, "o");
+  structure.addArc(t3, p3, "i");
+  structure.addArc(t3, p0, "o", [
+    { gridX: 6, gridY: 6 }
+  ]);
+  structure.addArc(t3, p4, "o", [
+    { gridX: 10, gridY: 6 }
+  ]);
+
+  marking = new Map();
+  marking.set("P0", "k");
+  marking.set("P1", "n");
+  marking.set("P4", "m");
+  return marking;
+}
+</script>
+</head><!-- ============================================================== -->
+
+<body onload="render(exampleMarkings)">
+<h1>Petrinet Fun - Visual Tests</h1>
+
+<p>
+Test page for visually checking the Petri Net rendering.
+This loads compiled TypeScript files from the <code>target/</code> directory.
+</p>
+
+<div class="center">
+<div class="stage" style="width: 780px; height: 560px;">
+<svg xmlns="http://www.w3.org/2000/svg"
+     id="pnf-main" width="780" height="560" viewBox="0 -10 780 560">
+</svg>
+</div>
+</div>
+
+<div>
+Examples:
+<ul>
+<li><a href="#" onclick="render(exampleClientServer)"
+       >Client/Server</a></li>
+<li><a href="#" onclick="render(exampleDeadlock)"
+       >Deadlock</a></li>
+<li><a href="#" onclick="render(exampleIntroductory)"
+       >Introductory Example</a>
+  from <i>A Practical Introduction to Modelling with Petri Nets</i>
+</li>
+<li><a href="#" onclick="render(exampleMarkings)"
+       >Markings</a></li>
+</ul>
+</div>
+
+
+</body>
+</html>
+
