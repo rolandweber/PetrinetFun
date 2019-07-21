@@ -4,6 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <meta name="viewport" content="width=device-width">
 <title>dev/main - Petrinet Fun</title>
+<link href="../../main/html/PetrinetFun.css" rel="stylesheet">
 <style type="text/css">
 body {
   background-color: #f8f8f8;
@@ -18,71 +19,6 @@ div.stage {
 
 div.center {
   text-align: center;
-}
-
-svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-place,
-svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-transition {
-  stroke: darkblue;
-  stroke-width: 2;
-  fill:   rgba(255, 255, 255, 0.8);
-}
-
-/*svg.PetrinetFun .PetrinetFun-structure marker > polygon, */
-svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-arrow {
-  stroke: black;
-  stroke-width: 1;
-  fill: black;
-}
-svg.PetrinetFun .PetrinetFun-structure .PetrinetFun-arc {
-  stroke: black;
-  stroke-width: 2;
-  fill: none;
-}
-
-svg.PetrinetFun .PetrinetFun-marking text {
-  dominant-baseline: middle;
-  text-anchor: middle;
-  font-family: sans-serif;
-  fill: green; /* text color */
-  font-size: 30px; /* px maps to SVG user unit here */
-}
-/* font-size 30 fits a single letter "m", or two letters "nj" into a place,
-   but not "mm". Position good for "m" and "nj", still decent for "p" and "l".
-   Numbers fit with two digits.
- */
-
-/* Numbers would look better a bit lower. But "dy" is not recognized by
-   either Firefox or Chrome as a CSS property. Hacked into the code instead.
-svg.PetrinetFun .PetrinetFun-marking text.PetrinetFun-numeric {
-   dy: 2px;
-} */
-
-svg.PetrinetFun .PetrinetFun-marking g.PetrinetFun-dots circle {
-  stroke: rgba(255, 255, 255, 1.0);
-  stroke-width: 0;
-  fill:   green;
-}
-
-svg.PetrinetFun .PetrinetFun-marking g.PetrinetFun-dots6 circle,
-svg.PetrinetFun .PetrinetFun-marking g.PetrinetFun-dots7 circle,
-svg.PetrinetFun .PetrinetFun-marking g.PetrinetFun-dots8 circle,
-svg.PetrinetFun .PetrinetFun-marking g.PetrinetFun-dots9 circle {
-  stroke-width: 1.4;
-}
-
-
-
-svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-place,
-svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-transition {
-  fill: rgb(192, 128, 255);
-  stroke: rgb(192, 128, 255);
-  stroke-width: 20;
-}
-svg.PetrinetFun .PetrinetFun-backdrop .PetrinetFun-arc {
-  fill: none;
-  stroke: rgb(224, 192, 255);
-  stroke-width: 14;
-  stroke-linecap: butt; /* others look bad when touching unmarked nodes */
 }
 </style>
 
