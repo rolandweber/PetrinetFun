@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "sourceMap": false,
+    "strictNullChecks": true,
+    "target": "es6"
+  }
+}

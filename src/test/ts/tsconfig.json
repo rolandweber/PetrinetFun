@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    // cannot load ES6 modules from file: URL, use AMD modules instead
+    "outFile": "../../../target/js/test.js",
+    "module": "AMD" // compatible with outFile
+  },
+  "include": [
+    "./"
+  ],
+  "references": [
+    { "path": "../../main/ts/" }
+  ]
+}
