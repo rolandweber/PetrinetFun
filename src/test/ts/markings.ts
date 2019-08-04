@@ -4,10 +4,10 @@
  * https://creativecommons.org/publicdomain/zero/1.0/
  */
 
-import * as grid from "grid"
+import { LayoutStructure as GridLayoutStructure } from "grid"
 
 
-export function exampleMarkings(structure: grid.LayoutStructure) {
+export function exampleMarkings(structure: GridLayoutStructure) {
 
     structure.addPlace(1, 0);
     structure.addPlace(3, 0);

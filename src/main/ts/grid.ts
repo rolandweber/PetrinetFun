@@ -23,6 +23,9 @@ export enum TransitionStyle {
     Vertical = "v",
     Square = "q",
 }
+export const Horizontal = TransitionStyle.Horizontal;
+export const Vertical = TransitionStyle.Vertical;
+export const Square = TransitionStyle.Square;
 
 export interface Transition extends Position {
     id: string;
@@ -35,6 +38,8 @@ export enum ArcType {
     Output = "o",
     // Read = "r", Inhibit = "h",... 
 }
+export const Input = ArcType.Input;
+export const Output = ArcType.Output;
 
 export interface Arc {
     id: string;
