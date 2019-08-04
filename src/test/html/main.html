@@ -42,12 +42,8 @@ function render(/*function*/ example) {
   })
 }
 
-
-function renderMarkings() {
-  requirejs(["examples"], function(examples) {
-    render(examples.exampleMarkings)
-  })
-}
+// =====================================================
+// example Petri nets
 
 function renderClientServer() {
   requirejs(["examples"], function(examples) {
@@ -68,6 +64,8 @@ function renderIntroductory() {
 }
 
 
+// =====================================================
+// special rendering cases
 
 function renderArcAnglesPlace() {
   requirejs(["arc_angles"], function(arc_angles) {
@@ -81,6 +79,11 @@ function renderArcAnglesTransition(tstyle) {
   })
 }
 
+function renderMarkings() {
+  requirejs(["markings"], function(markings) {
+    render(markings.exampleMarkings)
+  })
+}
 
 </script>
 </head><!-- ============================================================== -->
@@ -112,8 +115,10 @@ Examples:
        >Introductory Example</a>
   from <i>A Practical Introduction to Modelling with Petri Nets</i>
 </li>
-<li><a href="#" onclick="renderMarkings(); return false;"
-       >Markings</a></li>
+</ul>
+
+Visual Testcases:
+<ul>
 <li>Arc Angles:
   <a href="#" onclick="renderArcAnglesPlace(); return false;"
        >Place</a>,
@@ -125,6 +130,8 @@ Examples:
   <a href="#" onclick="renderArcAnglesTransition('q'); return false;"
        >square</a>
 </li>
+<li><a href="#" onclick="renderMarkings(); return false;"
+       >Markings</a></li>
 </ul>
 </div>
 
