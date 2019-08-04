@@ -5,7 +5,8 @@
   "main": "",
   "dependencies": {},
   "devDependencies": {
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.1",
+    "requirejs": "^2.3.6"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

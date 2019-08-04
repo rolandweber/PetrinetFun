@@ -6,7 +6,3 @@ node_modules/
 
 # compiled TypeScript files
 src/*/ts/*.js
-
-# external dependency for loading AMD modules:
-/src/test/html/require.js
-/src/dev/html/require.js
