@@ -67,10 +67,25 @@ function renderIntroductory() {
   })
 }
 
+
+
+function renderArcAnglesPlace() {
+  requirejs(["arc_angles"], function(arc_angles) {
+    render(arc_angles.generator_place())
+  })
+}
+
+function renderArcAnglesTransition(tstyle) {
+  requirejs(["arc_angles"], function(arc_angles) {
+    render(arc_angles.generator_transition(tstyle))
+  })
+}
+
+
 </script>
 </head><!-- ============================================================== -->
 
-<body onload="renderMarkings()">
+<body onload="renderArcAnglesPlace()">
 <h1>Petrinet Fun - Visual Tests</h1>
 
 <p>
@@ -89,16 +104,27 @@ This loads compiled TypeScript files from the <code>target/</code> directory.
 <div>
 Examples:
 <ul>
-<li><a href="#" onclick="renderClientServer()"
+<li><a href="#" onclick="renderClientServer(); return false;"
        >Client/Server</a></li>
-<li><a href="#" onclick="renderDeadlock()"
+<li><a href="#" onclick="renderDeadlock(); return false;"
        >Deadlock</a></li>
-<li><a href="#" onclick="renderIntroductory()"
+<li><a href="#" onclick="renderIntroductory(); return false;"
        >Introductory Example</a>
   from <i>A Practical Introduction to Modelling with Petri Nets</i>
 </li>
-<li><a href="#" onclick="renderMarkings()"
+<li><a href="#" onclick="renderMarkings(); return false;"
        >Markings</a></li>
+<li>Arc Angles:
+  <a href="#" onclick="renderArcAnglesPlace(); return false;"
+       >Place</a>,
+  Transition
+  <a href="#" onclick="renderArcAnglesTransition('h'); return false;"
+       >horizontal</a>,
+  <a href="#" onclick="renderArcAnglesTransition('v'); return false;"
+       >vertical</a>,
+  <a href="#" onclick="renderArcAnglesTransition('q'); return false;"
+       >square</a>
+</li>
 </ul>
 </div>
 
