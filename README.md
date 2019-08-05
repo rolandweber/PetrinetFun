@@ -2,6 +2,38 @@
 
 Visualization of Petri net invariants 
 
+## Development Setup
+
+Prerequisites are `git` and `npm`. I'm developing on Linux, but similar steps should work on Windows and Mac as well.
+
+1. Clone this repository.
+
+       git clone https://github.com/rolandweber/PetrinetFun.git
+
+   or, if you have a GitHub setup with SSH:
+
+       git clone git@github.com:rolandweber/PetrinetFun.git
+
+2. Install dependencies.
+
+       cd PetrinetFun/
+       npm install
+
+3. Compile the TypeScript sources.
+
+       ./node_modules/.bin/tsc -b
+
+   The TypeScript compiler is installed as a development dependency.
+
+4. Load the main test page `src/test/html/main.html` in a browser, using a `file:` URL. For example:
+
+       firefox file:///.../src/test/html/main.html
+
+   Replace `...` with the absolute path to your clone of this repository.
+
+You should see some a Petri net rendered on the page.
+There are links to select different Petri nets at the bottom of the page.
+
 
 ## Background
 
@@ -26,7 +58,7 @@ Many of these tools implement a graphical Petri net editor. Most of those also h
 
 Many tools are Open Source, but I found none that are community projects. They're either efforts of individuals, like [PIPE 5](https://github.com/sarahtattersall/PIPE/graphs/contributors). Or they are controlled by an academic group, like [GreatSPN](https://github.com/greatspn/SOURCES). Either way, there is little to no public discussion of features and pull requests. Some of the academic projects are not even hosting their sources in a public repository, they just provide tarballs for download. None of the projects I looked at has attracted a community, and many don't even try.
 Maybe I've missed some community project. For example, I barely glimpsed at projects in C/C++, because I don't want to mess with C/C++ UI toolkits or multi-platform compilation. I also don't want an Eclipse plug-in, because I don't fancy IDEs.
-But taking into account the frequency of [Petri net questions on Stack Overflow](https://stackexchange.com/search?q=petri+net) and associated sites, I do not believe there is enough public interest to carry a community project around Petri nets anyway.
+But taking into account the frequency of [Petri net questions on Stack Overflow](https://stackexchange.com/search?q=petri+net&pagesize=50) and associated sites, I do not believe there is enough public interest to carry a community project around Petri nets anyway.
 
 Another reason is that I'm wary of digging into an existing codebase. From some file formats I have looked at, including [PNML](http://www.pnml.org/), I got the impression that the prevalent data representation for Petri nets is very much different from what I have in mind.
 Most of the Open Source projects for Petri nets are [GPL](https://www.gnu.org/licenses/) licensed. If I dig into one of those codebases, and then decide to roll my own after all, I'd still do some things in the same way as I have seen them there. That means my work would become a derived work, and I'd have to apply the GPL to it, although I prefer to use more liberal licenses. Therefore, I am avoiding to even look at source code of other Petri net tools.
