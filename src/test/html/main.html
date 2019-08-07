@@ -39,6 +39,25 @@ function render(/*function*/ example) {
   })
 }
 
+
+function renderDossier(dossier) {
+  requirejs(["main"], function(main) {
+
+    main.renderDossierSVG("pnf-main", dossier);
+  })
+}
+
+
+// =====================================================
+// example Dossiers
+
+function renderClientServerDossier() {
+  requirejs(["client_server_dossier"], function(dossier) {
+    renderDossier(dossier.createDossier_ClientServer())
+  })
+}
+
+
 // =====================================================
 // example Petri nets
 
@@ -85,7 +104,7 @@ function renderMarkings() {
 </script>
 </head><!-- ============================================================== -->
 
-<body onload="renderArcAnglesPlace()">
+<body onload="renderClientServerDossier()">
 <h1>Petrinet Fun - Visual Tests</h1>
 
 <p>
@@ -102,6 +121,14 @@ This loads compiled TypeScript files from the <code>target/</code> directory.
 </div>
 
 <div>
+Dossiers:
+<ul>
+<li><a href="#" onclick="renderClientServerDossier(); return false;"
+       >Client/Server</a>
+  <i>with default marking, no areas yet</i>
+</li>
+</ul>
+
 Examples:
 <ul>
 <li><a href="#" onclick="renderClientServer(); return false;"
