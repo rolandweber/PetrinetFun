@@ -25,13 +25,19 @@ div.center {
 div.ListsOfInterest {
    float: right;
    padding: 0px;
-   margin: 0px;
+   margin: 0em 1em;
 }
+
 div.MarkingsOfInterest, div.AreasOfInterest {
    padding: 0.2em 1em;
    margin-bottom: 2em;
    border: 1px solid green;
    background-color: white;
+}
+
+div.ListsOfInterest a {
+   text-decoration: none;
+   color: darkblue;
 }
 </style>
 
@@ -45,6 +51,7 @@ function render(/*function*/ example) {
   requirejs(["grid", "main"], function(grid, main) {
 
     setupDossierMarkings(null);
+    setupDossierAreas(null);
     var gls = new grid.LayoutStructure();
     marking = example(gls);
     main.renderStructureSVG("pnf-main", gls);
@@ -57,10 +64,28 @@ function render(/*function*/ example) {
 
 function renderDossier(dossier) {
   setupDossierMarkings(dossier.marking_list);
+  setupDossierAreas(dossier.area_list);
   requirejs(["main"], function(main) {
     main.renderDossierSVG("pnf-main", dossier);
   })
 }
+
+function renderDossierMarking(marking) {
+  if (!marking)
+    marking = new Map();
+  requirejs(["main"], function(main) {
+    main.marking("pnf-main", marking);
+  })
+}
+
+function highlightDossierArea(ids) {
+  if (!ids)
+    ids = new Array();
+  requirejs(["main"], function(main) {
+    main.highlight("pnf-main", ids);
+  })
+}
+
 
 function setupDossierMarkings(moilist) {
   parent = document.getElementById("markings");
@@ -70,25 +95,51 @@ function setupDossierMarkings(moilist) {
     return;
 
   for (var moi of moilist) {
-    console.log("MoI "+moi);
-    var li = document.createElement("li");
-    li.setAttribute("data-name", moi.name);
-    li.innerHTML = '<a href="#" onclick="return false;">'+moi.name+'</a>'; //@@@ escape moi.name?
-    parent.appendChild(li);
-
+    let li = appendItemOfInterest(parent, moi.name);
     let marking = moi.marking;
     li.onclick = function() {
       renderDossierMarking(marking);
     }
   }
+
+  appendItemOfInterest(parent, '<i>- clear -</i>').onclick = function() {
+    renderDossierMarking(null);
+  };
 }
 
-function renderDossierMarking(marking) {
-  if (!marking)
-    marking = new Map();
-  requirejs(["main"], function(main) {
-    main.marking("pnf-main", marking);
-  })
+function setupDossierAreas(aoilist) {
+  parent = document.getElementById("areas");
+  while (parent.lastChild)
+    parent.removeChild(parent.lastChild);
+  if (!aoilist)
+    return;
+
+  for (var aoi of aoilist) {
+    let li = appendItemOfInterest(parent, aoi.name);
+    let ids = aoi.ids;
+    li.onclick = function() {
+      highlightDossierArea(ids);
+    }
+  }
+
+  appendItemOfInterest(parent, '<i>- clear -</i>').onclick = function() {
+    highlightDossierArea(null);
+  };
+
+  /*
+  appendItemOfInterest(parent, '<i>- dummy -</i>').onclick = function() {
+    highlightDossierArea(["P0", "T0", "T0$i$P0"]);
+  };
+  */
+}
+
+function appendItemOfInterest(parent, text) {
+  var li = document.createElement("li");
+  li.setAttribute("data-name", text);
+  li.innerHTML = '<a href="#" onclick="return false;">'+
+        text+'</a>'; //@@@ escape text?
+  parent.appendChild(li);
+  return li;
 }
 
 
@@ -161,10 +212,10 @@ This loads compiled TypeScript files from the <code>target/</code> directory.
 <h3>Markings of Interest</h3>
 <ul id="markings"></ul>
 </div>
-<!-- div class="AreasOfInterest">
+<div class="AreasOfInterest">
 <h3>Areas of Interest</h3>
 <ul id="areas"></ul>
-</div-->
+</div>
 </div><!-- ListsOfInterest -->
 
 <div class="center">
