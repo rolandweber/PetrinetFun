@@ -21,6 +21,11 @@ export interface AreaOfInterest {
     ids: Array<string> // IDs of places, transitions, arcs
 }
 
+export enum AreaArcs {
+    None = "n",
+    Connecting = "c",
+    Touching = "t"
+}
 
 
 export class Dossier {
@@ -53,6 +58,26 @@ export class Dossier {
 
     addMarking(name: string, marking: Map<string,string|number>) {
         this.marking_list.push({ name: name, marking: marking });
+    }
+
+    addArea(name: string, ids: Array<string>, arcs: AreaArcs = AreaArcs.None) {
+        let area = [...ids];
+        switch (arcs) {
+            case AreaArcs.Connecting:
+                console.log("@@@ not yet implemented");
+                // FALL THROUGH until implemented
+
+            case AreaArcs.Touching: {
+                for (let arcid of
+                     this.grid_layout.getTouchingArcIDs(area).values()) {
+                    area.push(arcid);
+                }
+                break;
+            }
+            default: // do nothing
+                break;
+        }
+        this.area_list.push({ name: name, ids: area });
     }
 
 }

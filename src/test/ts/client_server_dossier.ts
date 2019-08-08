@@ -4,7 +4,7 @@
  * https://creativecommons.org/publicdomain/zero/1.0/
  */
 
-import { Dossier, MarkingOfInterest, AreaOfInterest } from "dossier"
+import { Dossier, MarkingOfInterest, AreaOfInterest, AreaArcs } from "dossier"
 import { LayoutStructure as GridLayoutStructure,
          Horizontal, Vertical, Input, Output } from "grid"
 
@@ -21,6 +21,28 @@ export function createDossier_ClientServer(): Dossier {
     marking.set("P0", "n");
     marking.set("P3", "m");
     dossier.addMarking("variable", marking)
+
+
+    let area = ["P0", "P1", "P2", "T0", "T1", "T2"];
+    dossier.addArea("Client Side", area, AreaArcs.Connecting);
+
+    area = ["P6", "P7"];
+    dossier.addArea("Channels", area, AreaArcs.Touching);
+
+    area = ["P3", "P4", "P5", "T3", "T4", "T5"];
+    dossier.addArea("Server Side", area, AreaArcs.Connecting);
+
+    area = ["P0", "P1", "P2"];
+    dossier.addArea("PI: Client", area, AreaArcs.Touching);
+
+    area = ["P3", "P4", "P5"];
+    dossier.addArea("PI: Server", area, AreaArcs.Touching);
+
+    area = ["P0", "P6", "P4", "P7", "P2"];
+    dossier.addArea("PI: Requests and Responses", area, AreaArcs.Touching);
+
+    area = ["T0", "T1", "T2", "T3", "T4", "T5"];
+    dossier.addArea("TI: full cycle", area, AreaArcs.Touching);
 
     return dossier;
 }
