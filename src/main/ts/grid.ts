@@ -123,50 +123,30 @@ export class LayoutStructure {
     }
 
 
-    //@@@ arc expansion implementation is inefficient for large structures
+    protected pickRelatedArcIDs(nodeIDs: Array<string>,
+                                connecting: boolean) : Set<string> {
+        // if 'connecting' is true, both ends of an arc must be in nodeIDs
+        // if 'connecting' is false, just one end is sufficient
 
-    getArcIDsForTransition(t: Transition,
-                           result?: Set<string>) : Set<string> {
-        if (result == null) {
-            result = new Set<string>();
-        }
+        let nodeset = new Set<string>(nodeIDs);
+        let arcset = new Set<string>();
+
         for (let arc of this.arcs.values()) {
-            if (arc.transition == t) {
-                result.add(arc.id);
+            const hasT = nodeset.has(arc.transition.id);
+            const hasP = nodeset.has(arc.place.id);
+            if ((hasT && hasP) || (!connecting && (hasT || hasP))) {
+                arcset.add(arc.id);
             }
         }
-        console.log(t.id, " -> ", result);
-        return result;
+        return arcset;
     }
 
-    getArcIDsForPlace(p: Place,
-                      result?: Set<string>) : Set<string> {
-        if (result == null) {
-            result = new Set<string>();
-        }
-        for (let arc of this.arcs.values()) {
-            if (arc.place == p) {
-                result.add(arc.id);
-            }
-        }
-        console.log(p.id, " -> ", result);
-        return result;
+    getConnectingArcIDs(nodeIDs: Array<string>) : Set<string> {
+        return this.pickRelatedArcIDs(nodeIDs, true);
     }
 
     getTouchingArcIDs(nodeIDs: Array<string>) : Set<string> {
-        let result = new Set<string>();
-        for (let id of nodeIDs) {
-            let t = this.transitions.get(id);
-            if (t) {
-                this.getArcIDsForTransition(t, result);
-            } else {
-                let p = this.places.get(id);
-                if (p) {
-                    this.getArcIDsForPlace(p, result);
-                } 
-            }
-        }
-        console.log("all:", result);
-        return result;
+        return this.pickRelatedArcIDs(nodeIDs, false);
     }
+
 }

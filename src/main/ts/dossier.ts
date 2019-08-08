@@ -63,15 +63,14 @@ export class Dossier {
     addArea(name: string, ids: Array<string>, arcs: AreaArcs = AreaArcs.None) {
         let area = [...ids];
         switch (arcs) {
-            case AreaArcs.Connecting:
-                console.log("@@@ not yet implemented");
-                // FALL THROUGH until implemented
-
+            case AreaArcs.Connecting: {
+                const arcidset = this.grid_layout.getConnectingArcIDs(area);
+                area = area.concat(Array.from(arcidset));
+                break;
+            }
             case AreaArcs.Touching: {
-                for (let arcid of
-                     this.grid_layout.getTouchingArcIDs(area).values()) {
-                    area.push(arcid);
-                }
+                const arcidset = this.grid_layout.getTouchingArcIDs(area);
+                area = area.concat(Array.from(arcidset));
                 break;
             }
             default: // do nothing
