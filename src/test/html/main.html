@@ -156,12 +156,6 @@ function renderClientServerDossier() {
 // =====================================================
 // example Petri nets
 
-function renderClientServer() {
-  requirejs(["examples"], function(examples) {
-    render(examples.exampleClientServer)
-  })
-}
-
 function renderDeadlock() {
   requirejs(["examples"], function(examples) {
     render(examples.exampleDeadlock)
@@ -232,14 +226,11 @@ Dossiers:
 <ul>
 <li><a href="#" onclick="renderClientServerDossier(); return false;"
        >Client/Server</a>
-  <i>with default marking, no areas yet</i>
 </li>
 </ul>
 
 Examples:
 <ul>
-<li><a href="#" onclick="renderClientServer(); return false;"
-       >Client/Server</a></li>
 <li><a href="#" onclick="renderDeadlock(); return false;"
        >Deadlock</a></li>
 <li><a href="#" onclick="renderIntroductory(); return false;"
