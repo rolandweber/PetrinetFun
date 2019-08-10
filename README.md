@@ -1,6 +1,25 @@
 # PetrinetFun
 
-Visualization of Petri net invariants 
+## Concepts
+
+PetrinetFun is a utility for teaching Petri nets. Instructors create or re-use a **dossier** for each Petri net to be discussed.
+A dossier comprises the structure of the Petri net, one or more markings, and a list of regions. A region is a set of places, transitions, and arcs. Regions can be used to highlight invariants, or any other part of the Petri net structure. It is up to the instructor to define the regions of interest.
+The markings can be different initial markings, or special cases like deadlocks. It is up to the instructor to define the markings of interest.
+
+
+### Current Restrictions
+
+- Documentation is missing.
+
+- Dossiers must be coded in JavaScript or TypeScript.
+  See [src/test/ts/*_dossier.ts](src/test/ts/) for example dossiers in TypeScript.
+
+  - Instructions for coding a dossier in JavaScript are missing.
+
+  - There is no support for computing invariants from the Petri net structure.
+
+- The rendered Petri nets are static. There is no live animation mode that lets you fire transitions.
+
 
 ## Development Setup
 
@@ -31,8 +50,9 @@ Prerequisites are `git` and `npm`. I'm developing on Linux, but similar steps sh
 
    Replace `...` with the absolute path to your clone of this repository.
 
-You should see some a Petri net rendered on the page.
-There are links to select different Petri nets at the bottom of the page.
+You should see a Petri dossier rendered on the page.
+Links to select markings and areas of interest are to the right.
+Links to select other dossiers and Petri nets are at the bottom of the page.
 
 
 ## Background
