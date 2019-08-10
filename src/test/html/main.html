@@ -107,6 +107,7 @@ function setupDossierMarkings(moilist) {
   };
 }
 
+
 function setupDossierAreas(aoilist) {
   parent = document.getElementById("areas");
   while (parent.lastChild)
@@ -125,13 +126,8 @@ function setupDossierAreas(aoilist) {
   appendItemOfInterest(parent, '<i>- clear -</i>').onclick = function() {
     highlightDossierArea(null);
   };
-
-  /*
-  appendItemOfInterest(parent, '<i>- dummy -</i>').onclick = function() {
-    highlightDossierArea(["P0", "T0", "T0$i$P0"]);
-  };
-  */
 }
+
 
 function appendItemOfInterest(parent, text) {
   var li = document.createElement("li");
@@ -158,13 +154,9 @@ function renderDeadlockDossier() {
   })
 }
 
-
-// =====================================================
-// example Petri nets
-
-function renderIntroductory() {
-  requirejs(["examples"], function(examples) {
-    render(examples.exampleIntroductory)
+function renderIntroductoryDossier() {
+  requirejs(["introductory_dossier"], function(dossier) {
+    renderDossier(dossier.createDossier_Introductory())
   })
 }
 
@@ -193,7 +185,7 @@ function renderMarkings() {
 </script>
 </head><!-- ============================================================== -->
 
-<body onload="renderDeadlockDossier()">
+<body onload="renderIntroductoryDossier()">
 <h1>Petrinet Fun - Visual Tests</h1>
 
 <p>
@@ -222,7 +214,7 @@ This loads compiled TypeScript files from the <code>target/</code> directory.
 
 
 <div>
-Dossiers:
+<h2>Dossiers</h2>
 <ul>
 <li><a href="#" onclick="renderClientServerDossier(); return false;"
        >Client/Server</a>
@@ -230,17 +222,13 @@ Dossiers:
 <li><a href="#" onclick="renderDeadlockDossier(); return false;"
        >Deadlock</a>
 </li>
-</ul>
-
-Examples:
-<ul>
-<li><a href="#" onclick="renderIntroductory(); return false;"
+<li><a href="#" onclick="renderIntroductoryDossier(); return false;"
        >Introductory Example</a>
   from <i>A Practical Introduction to Modelling with Petri Nets</i>
 </li>
 </ul>
 
-Visual Testcases:
+<h2>Visual Testcases</h2>
 <ul>
 <li>Arc Angles:
   <a href="#" onclick="renderArcAnglesPlace(); return false;"

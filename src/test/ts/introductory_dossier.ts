@@ -4,11 +4,41 @@
  * https://creativecommons.org/publicdomain/zero/1.0/
  */
 
+import { Dossier, MarkingOfInterest, AreaOfInterest, AreaArcs } from "dossier"
 import { LayoutStructure as GridLayoutStructure,
          Horizontal, Vertical, Input, Output } from "grid"
 
+export function createDossier_Introductory(): Dossier {
 
-export function exampleIntroductory(structure: GridLayoutStructure) {
+    let dossier = new Dossier(createGrid_Introductory())
+
+    let marking = new Map();
+    marking.set("P0", "k");
+    marking.set("P1", "n");
+    marking.set("P4", "m");
+    dossier.addMarking("variable", marking);
+
+    let area = ["P1", "P2"];
+    dossier.addArea("PI: Sketchers", area, AreaArcs.Touching);
+
+    area = ["P3", "P4"];
+    dossier.addArea("PI: Drawers", area, AreaArcs.Touching);
+
+    area = ["P0", "P2", "P3"];
+    dossier.addArea("PI: Tables", area, AreaArcs.Touching);
+
+    area = ["P5"];
+    dossier.addArea("Pile of Work (unbounded)", area, AreaArcs.None);
+
+    area = ["T0", "T1", "T2", "T3"];
+    dossier.addArea("TI: full cycle", area, AreaArcs.Touching);
+
+    return dossier;
+}
+
+
+function createGrid_Introductory() {
+    let structure = new GridLayoutStructure()
 
     const p0 = structure.addPlace(5, 0);
     const p1 = structure.addPlace(0, 3);
@@ -50,9 +80,5 @@ export function exampleIntroductory(structure: GridLayoutStructure) {
         { gridX: 10, gridY: 6 }
     ]);
 
-    let marking = new Map();
-    marking.set("P0", "k");
-    marking.set("P1", "n");
-    marking.set("P4", "m");
-    return marking;
+    return structure;
 }
